@@ -1,0 +1,101 @@
+<!-- Responsive Top Header -->
+<div class="top-header" style="position: relative; align-items: center; min-height: 60px;">
+  <!-- Logo at the absolute top-left corner -->
+  <div class="logo-section">
+    <img src="/img/pusa.png" alt="DLSU PUSA" class="logo">
+  </div>
+  <!-- Desktop buttons remain in their original position -->
+<div class="desktop-nav-group">
+    <button class="icon-circle desktop-only" id="dashboardBtn" aria-label="Dashboard">
+      <img src="/img/dashboard.png" alt="Dashboard" class="circle-icon">
+    </button>
+    <button class="btn-outline desktop-only" id="furAdoptionBtn">Fur Adoption</button>
+    <button class="btn-outline desktop-only" id="skillsAssessmentBtn">Skills Assessment</button>
+    <button class="icon-circle desktop-only" id="dashboardBtn" aria-label="Dashboard">
+      <img src="/img/menu.png" alt="Menu" class="menu-icon">
+    </button>
+  </div>
+</div>
+
+<div class="calendar-nav-group">
+  <button class="nav-btn" id="prevWeek" type="button">
+    <img src="/img/back.png" alt="Previous Week" class="nav-icon">
+  </button>
+  <button class="btn" id="todayBtn" type="button">Today</button>
+  <button class="nav-btn" id="nextWeek" type="button">
+    <img src="/img/back.png" alt="Next Week" class="nav-icon nav-icon-flip">
+  </button>
+        </div>
+
+<div class="scheduler-container">
+    
+    <div class="date-header">
+        <div class="date-nav">
+            <h1 class="current-date">{{currentMonth}}</h1>
+        </div>
+        
+    </div>
+    <div class="week-calendar">
+        <div class="week-header">
+            <div class="time-gutter"></div>
+            {{#each weekDays}}
+            <div class="day-header {{#if isToday}}today{{/if}}">
+                {{#if isToday}}
+                  <div class="today-rect"></div>
+                {{/if}}
+                <div class="day-name">{{dayName}}</div>
+                <div class="day-number">{{day}}</div>
+                {{#if isToday}}<div class="today-indicator"></div>{{/if}}
+            </div>
+            {{/each}}
+        </div>
+        <div class="time-grid">
+            <div class="time-column">
+                {{#each timeSlots}}
+                <div class="time-slot">
+                    <span class="time-label">{{this}}</span>
+                </div>
+                {{/each}}
+            </div>
+            <div class="week-grid">
+                {{#each weekDays}}
+                <div class="day-column" data-date="{{dateString}}">
+                    {{#each ../timeSlots}}
+                    <div class="time-cell" data-time="{{this}}">
+                        <div class="grid-line"></div>
+                    </div>
+                    {{/each}}
+                    {{#each events}}
+                    <div class="event-card" 
+                         data-id="{{id}}"
+                         style="top: {{calculateEventPosition startTime}}px; height: {{calculateEventHeight startTime endTime}}px;">
+                        <div class="event-header">
+                            <h3 class="event-title">{{title}}</h3>
+                        </div>
+                        <div class="event-body">
+                            <div class="event-time">{{startTime}} - {{endTime}}</div>
+                            <div class="event-slots">
+                                <div class="slot-avatars">
+                                    {{#each attendees}}
+                                    <div class="avatar">{{initial}}</div>
+                                    {{/each}}
+                                </div>
+                                <div class="slot-count">{{attendeeCount}}/{{maxAttendees}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+ 
+
+
+
+
+</script>
+<script src="/js/script.js"></script>
+</script>

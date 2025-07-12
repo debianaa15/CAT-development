@@ -1,0 +1,1476 @@
+/* Desktop navigation group for top header */
+.desktop-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: absolute;
+    top: 0;
+    right: 15.5rem;
+    height: 100%;
+    padding-right: 20px;
+}
+
+/* Color Theme */
+:root {
+    --primary-color: #02522E;
+    --highlight-color: #A0BA1C;
+    --primary-dark: #01421A;
+    --primary-light: #E8F5E8;
+    --secondary-color: #2E7D32;
+    --success-color: #4CAF50;
+    --warning-color: #FF9800;
+    --error-color: #F44336;
+    --text-primary: #02522E;
+    --text-secondary: #2E7D32;
+    --text-muted: #757575;
+    --bg-primary: #FDFDFD;
+    --bg-secondary: #F1F8E9;
+    --bg-tertiary: #E8F5E8;
+    --border-color: rgba(2, 82, 46, 0.1);
+    --border-light: rgba(2, 82, 46, 0.5);
+    --shadow-sm: 0 1px 2px 0 rgba(27, 94, 32, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(27, 94, 32, 0.15), 0 2px 4px -1px rgba(27, 94, 32, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(27, 94, 32, 0.2), 0 4px 6px -2px rgba(27, 94, 32, 0.1);
+    --border-radius: 25px;
+    --border-radius-lg: 12px;
+
+}
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    font-size: 14px;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+
+
+/* Top Header */
+.top-header {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 17px;
+    align-items: center;
+    z-index: 1000;
+    padding: 10px;
+
+}
+
+/* ...existing code... */
+.btn-outline {
+    background: white;
+    color: var(--primary-color);
+    border: 1.5px solid var(--primary-color);
+    width: auto;
+    min-width: 124px;
+    height: 40px;
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline:hover {
+    background: rgba(1, 94, 52, 0.25); /* #015E34 at 25% opacity */
+    color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid var(--primary-color);
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.icon-circle:hover {
+    background: rgba(1, 94, 52, 0.25); /* #015E34 at 25% opacity */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+
+
+.circle-icon, .menu-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.logo-section {
+    position: absolute;
+    left: 50px;
+    top: -20px;
+}
+
+.logo {
+    width: 166px;
+    height: 135px;
+
+}
+
+.app-name {
+    display: none; /* Hidden as per design */
+}
+
+/* Main Content */
+.main-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: var(--bg-primary);
+}
+
+.scheduler-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    left: 8rem;
+}
+
+/* Date Header */
+.date-header {
+    position: absolute;
+    left: 152px;
+    top: 112px;
+}
+
+.date-nav {
+    display: flex;
+    align-items: center;
+    gap: 64px;
+}
+
+.current-date {
+    color: var(--primary-color);
+    font-size: 60px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    margin: 0;
+    word-wrap: break-word;
+}
+.calendar-nav-group {
+    position: relative;
+    top: 7rem;
+    right: 1rem;
+}
+
+.nav-btn {
+    width: 40px;
+    height: 39px;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    border: 1.5px solid var(--primary-color);
+    background: transparent;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background: rgba(1, 94, 52, 0.25); /* #015E34 at 25% opacity */
+}
+
+.nav-btn img {
+    width: 18px;
+    height: 18px;
+}
+
+#prevWeek {
+    position: absolute;
+    left: 90rem;
+    top: 18px;
+    transition: left 0.2s, top 0.2s;
+}
+
+#nextWeek {
+    position: absolute;
+    left: 100rem;
+    top: 18px;
+    transition: left 0.2s, top 0.2s;
+}
+
+/* Today button */
+#todayBtn {
+    position: absolute;
+    left: 94rem;
+    top: 18px;
+    width: auto;
+    min-width: 60px;
+    background: transparent;
+    border: none;
+    color: var(--primary-color);
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+/* Responsive navigation buttons */
+@media (max-width: 1400px) {
+    #prevWeek {
+        left: 68rem;
+        top: 15px;
+    }
+    #nextWeek {
+        left: 75rem;
+        top: 15px;
+    }
+    #todayBtn {
+        left: 100rem;
+        top: 15px;
+        min-width: 50px;
+        font-size: 14px;
+    }
+}
+@media (max-width: 1200px) {
+    #prevWeek {
+        left: 55rem;
+    }
+    #nextWeek {
+        left: 62rem;
+    }
+    #todayBtn {
+        left: 58rem;
+    }
+}
+@media (max-width: 992px) {
+    #prevWeek {
+        left: 45rem;
+        top: 15px;
+    }
+    #nextWeek {
+        left: 50rem;
+        top: 15px;
+    }
+    #todayBtn {
+        left: 47rem;
+        top: 15px;
+        min-width: 40px;
+        font-size: 13px;
+    }
+}
+@media (max-width: 768px) {
+    #prevWeek {
+        left: 5px;
+        top: 155px;
+    }
+    #nextWeek {
+        left: 45px;
+        top: 155px;
+    }
+    #todayBtn {
+        left: 85px;
+        top: 155px;
+        min-width: 30px;
+        font-size: 12px;
+    }
+}
+@media (max-width: 480px) {
+    #prevWeek {
+        left: 5px;
+        top: 155px;
+    }
+    #nextWeek {
+        left: 45px;
+        top: 155px;
+    }
+    #todayBtn {
+        left: 85px;
+        top: 155px;
+        min-width: 20px;
+        font-size: 10px;
+    }
+}
+
+/* Week Calendar */
+.week-calendar {
+    position: absolute;
+    top: 236px;
+    left: 128px;
+    width: 1271px;
+}
+
+/* Week Header */
+.week-header {
+    position: relative;
+    height: 67px;
+    margin-bottom: 120px;
+    left: 120px;
+    width: 100%;
+    min-width: 700px;
+    box-sizing: border-box;
+    transition: left 0.2s, width 0.2s, min-width 0.2s;
+}
+
+@media (max-width: 1400px) {
+    .week-header {
+        left: 20px;
+        width: calc(100% - 40px);
+        min-width: 600px;
+    }
+}
+
+@media (max-width: 992px) {
+    .week-header {
+        left: 0;
+        width: 100%;
+        min-width: 500px;
+        margin-bottom: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .week-header {
+        left: 0;
+        width: 100%;
+        min-width: 350px;
+        margin-bottom: 40px;
+        height: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+    .week-header {
+        min-width: 250px;
+        margin-bottom: 20px;
+        height: 32px;
+    }
+}
+
+.time-gutter {
+    display: none; /* Not needed in this layout */
+}
+
+.day-header {
+    position: absolute;
+    text-align: center;
+}
+
+.day-header:nth-child(2) { /* Sun */
+    left: -15px;
+    top: 0;
+}
+
+.day-header:nth-child(3) { /* Mon */
+    left: 182px;
+    top: 0;
+}
+
+.day-header:nth-child(4) { /* Tue */
+    left: 378px;
+    top: 0;
+}
+
+.day-header:nth-child(5) { /* Wed */
+    left: 564px;
+    top: 0;
+}
+
+.day-header:nth-child(6) { /* Thu */
+    left: 757px;
+    top: 0;
+}
+
+.day-header:nth-child(7) { /* Fri */
+    left: 951px;
+    top: 0;
+}
+
+.day-header:nth-child(8) { /* Sat */
+    left: 1147px;
+    top: 0;
+}
+
+.day-name {
+    color: var(--primary-color);
+    font-size: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    word-wrap: break-word;
+}
+
+.day-number {
+    color: var(--primary-color);
+    font-size: 35px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    word-wrap: break-word;
+}
+
+/* Highlight Monday (today) */
+
+/* Today header highlight: rounded rectangle with centered day name and number */
+.day-header.today {
+    z-index: 2;
+}
+
+
+.day-header.today .today-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 0 8px 0;
+    min-width: 70px;
+    min-height: 80px;
+    margin: 0 auto;
+    border: 2px solid #A0BA1C;
+    box-shadow: 0 2px 8px 0 rgba(160, 186, 28, 0.10);
+    position: relative;
+}
+
+.day-header.today .day-name {
+    color: #A0BA1C !important;
+    text-shadow: none;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    text-align: center;
+    letter-spacing: 0.05em;
+}
+
+.day-header.today .day-number {
+    color: #A0BA1C !important;
+    text-shadow: none;
+    font-size: 35px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+/* Underline for day headers */
+.day-header::after {
+    content: '';
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 171px;
+    height: 3px;
+    background: #02522E;
+}
+
+/* Today highlight underline */
+.day-header.today::after {
+    background: #A0BA1C;
+    height: 2px;
+}
+
+/* Rectangle highlight for today column up to 6pm */
+.week-calendar .day-header.today::after {
+    /* keep underline above the rectangle */
+    z-index: 2;
+}
+.week-calendar .today-rect {
+    position: absolute;
+    left: -4.2rem;
+    top: 125px;
+    height: 430px;
+    background: #D9D9D9;
+    border-radius: 0 0 12px 12px;
+    z-index: 0;
+    pointer-events: none;
+    margin: 0 auto;
+    width: 171px;
+    opacity: 0.4;
+}
+
+
+/* Time Grid */
+.time-grid {
+    position: relative;
+    top: 120px;
+}
+
+.time-column {
+    position: absolute;
+    left: -88px;
+}
+
+.time-slot {
+    position: absolute;
+    color: var(--primary-color);
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.time-slot:nth-child(1) { /* 2 PM */
+    left: 40px;
+    bottom: 70px;
+}
+
+.time-slot:nth-child(2) { /* 3 PM */
+    left: 40px;
+    top: 1px;
+}
+
+.time-slot:nth-child(3) { /* 4 PM */
+    left: 39px;
+    top: 80px;
+}
+
+.time-slot:nth-child(4) { /* 5 PM */
+    left: 39px;
+    top: 150px;
+}
+
+.time-slot:nth-child(5) { /* 6 PM */
+    left: 39px;
+    top: 220px;
+}
+
+.time-label {
+    color: var(--primary-color);
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+/* Time separators */
+.time-slot::after {
+    content: '';
+    position: absolute;
+    left: 10px;
+    bottom: -10px;
+    width: 40px;
+    height: 0.5px;
+    background: var(--border-light);
+    transform: rotate(90deg);
+    transform-origin: top left;
+}
+
+.time-slot:nth-child(3)::after,
+.time-slot:nth-child(4)::after {
+    width: 25px;
+}
+
+.time-slot:nth-child(5)::after {
+    display: none;
+}
+
+
+
+/* Week Grid */
+.week-grid {
+    display: none;
+}
+
+.day-column {
+    border-right: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.day-column:last-child {
+    border-right: none;
+}
+
+.time-cell {
+    height: 80px;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.grid-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e0e0e0;
+}
+
+/* Event Cards */
+.event-card {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.event-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.event-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 0.5rem 0.75rem;
+}
+
+.event-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-body {
+    padding: 0.75rem;
+}
+
+.event-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.event-slots {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.slot-avatars {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.slot-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Buttons */
+.btn {
+    width: 40px;
+    height: 39px;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    border: 1.5px solid var(--primary-color);
+    background: transparent;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.btn-primary {
+    background: transparent;
+    color: var(--primary-color);
+    border: 1.5px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+    background: rgba(2, 82, 46, 0.1);
+}
+
+.btn-secondary {
+    background: #f5f5f5;
+    color: var(--text-primary);
+    border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+/* Button Icons */
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.nav-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.nav-icon-flip {
+    transform: scaleX(-1);
+}
+
+.close-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+
+
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: #f5f5f5;
+    color: var(--text-primary);
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(2, 82, 46, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+#eventForm {
+    padding: 1.5rem;
+}
+
+/* Current Time Line */
+.current-time-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #FF5722;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+    .week-calendar {
+        width: calc(100% - 40px);
+        left: 20px;
+    }
+    
+    #prevWeek {
+        left: 68rem;
+    }
+    
+    #nextWeek {
+        left: 75rem;
+    }
+    
+    #todayBtn {
+        left: 71rem;
+        top: 15px;
+        min-width: 50px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .current-date {
+        font-size: 50px;
+        left: 100px;
+    }
+    
+    .date-header {
+        left: 100px;
+    }
+    
+    .week-calendar {
+        left: 20px;
+        width: calc(100% - 40px);
+    }
+    
+    #prevWeek {
+        left: 55rem;
+    }
+    
+    #nextWeek {
+        left: 62rem;
+    }
+    
+    #todayBtn {
+        left: 58rem;
+    }
+    
+    .day-header::after {
+        width: 100px;
+    }
+}
+
+@media (max-width: 992px) {
+    .top-header {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 10px 15px;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-outline {
+        min-width: 100px;
+        padding: 8px 12px;
+        font-size: 13px;
+        height: 35px;
+    }
+    
+    .icon-circle {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .circle-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .pusa-corner {
+        top: 10px;
+        left: 10px;
+    }
+    
+    .pusa-icon {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .current-date {
+        font-size: 45px;
+        left: 80px;
+        top: 90px;
+    }
+    
+    .date-header {
+        left: 80px;
+        top: 90px;
+    }
+    
+    .week-calendar {
+        left: 15px;
+        top: 200px;
+        width: calc(100% - 30px);
+    }
+    
+    .nav-btn {
+        width: 35px;
+        height: 35px;
+        padding: 8px;
+    }
+    
+    .nav-btn img {
+        width: 16px;
+        height: 16px;
+    }
+    
+    #prevWeek {
+        left: 60rem;
+        top: 15px;
+    }
+    
+    #nextWeek {
+        left: 65rem;
+        top: 15px;
+    }
+    
+    #todayBtn {
+        left: 62rem;
+        top: 15px;
+        min-width: 50px;
+        font-size: 13px;
+    }
+    
+    .day-name {
+        font-size: 18px;
+    }
+    
+    .day-number {
+        font-size: 30px;
+    }
+    
+    .day-header::after {
+        width: 80px;
+    }
+    
+    .time-slot {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 13px;
+    }
+    
+    .top-header {
+        position: fixed;
+        top: 5px;
+        right: 5px;
+        left: 5px;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(15px);
+        border-radius: 10px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1001;
+    }
+    
+    .btn-outline {
+        min-width: 80px;
+        padding: 6px 10px;
+        font-size: 12px;
+        height: 32px;
+        border-radius: 16px;
+    }
+    
+    .icon-circle {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .circle-icon {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .pusa-corner {
+        top: 60px;
+        left: 10px;
+    }
+    
+    .pusa-icon {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .logo-section {
+        display: none;
+    }
+    
+    .current-date {
+        font-size: 35px;
+        left: 20px;
+        top: 140px;
+    }
+    
+    .date-header {
+        left: 20px;
+        top: 140px;
+    }
+    
+    .week-calendar {
+        left: 10px;
+        top: 220px;
+        width: calc(100% - 20px);
+    }
+    
+    .nav-btn {
+        width: 32px;
+        height: 32px;
+        padding: 6px;
+        border-radius: 16px;
+    }
+    
+    .nav-btn img {
+        width: 14px;
+        height: 14px;
+    }
+    
+    #prevWeek {
+        left: 60rem;
+        top: 15px;
+    }
+    
+    #nextWeek {
+        left: 65rem;
+        top: 15px;
+    }
+    
+    #todayBtn {
+        left: 62rem;
+        top: 15px;
+        min-width: 50px;
+        font-size: 13px;
+    }
+    
+    .day-name {
+        font-size: 18px;
+    }
+    
+    .day-number {
+        font-size: 30px;
+    }
+    
+    .day-header::after {
+        width: 80px;
+    }
+    
+    .time-slot {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 12px;
+    }
+    
+    .top-header {
+        top: 2px;
+        right: 2px;
+        left: 2px;
+        gap: 6px;
+        padding: 6px;
+    }
+    
+    .btn-outline {
+        min-width: 70px;
+        padding: 4px 8px;
+        font-size: 11px;
+        height: 28px;
+        border-radius: 14px;
+    }
+    
+    .icon-circle {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .circle-icon {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .pusa-corner {
+        top: 50px;
+        left: 5px;
+    }
+    
+    .pusa-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .current-date {
+        font-size: 28px;
+        left: 10px;
+        top: 120px;
+    }
+    
+    .date-header {
+        left: 10px;
+        top: 120px;
+    }
+    
+    .date-nav {
+        gap: 30px;
+    }
+    
+    .week-calendar {
+        left: 5px;
+        top: 180px;
+        width: calc(100% - 10px);
+    }
+    
+    .week-header {
+        min-width: 700px;
+        margin-bottom: 60px;
+    }
+    
+    .nav-btn {
+        width: 28px;
+        height: 28px;
+        padding: 4px;
+        border-radius: 14px;
+    }
+    
+    .nav-btn img {
+        width: 12px;
+        height: 12px;
+    }
+    
+    #prevWeek {
+        left: 5px;
+        top: 155px;
+    }
+    
+    #nextWeek {
+        left: 45px;
+        top: 155px;
+    }
+    
+    #todayBtn {
+        left: 85px;
+        top: 155px;
+        min-width: 40px;
+        font-size: 10px;
+        height: 28px;
+        border-radius: 14px;
+    }
+    
+    .day-header {
+        min-width: 80px;
+    }
+    
+    .day-name {
+        font-size: 12px;
+    }
+    
+    .day-number {
+        font-size: 20px;
+    }
+    
+    .day-header::after {
+        width: 50px;
+        height: 1px;
+    }
+    
+    .time-grid {
+        min-width: 700px;
+        top: 60px;
+    }
+    
+    .time-slot {
+        font-size: 11px;
+    }
+    
+    .time-column {
+        left: -50px;
+    }
+    
+    .event-card {
+        border-radius: 4px;
+        min-width: 100px;
+    }
+    
+    .event-title {
+        font-size: 0.7rem;
+    }
+    
+    .event-time {
+        font-size: 0.65rem;
+    }
+    
+    .avatar {
+        width: 20px;
+        height: 20px;
+        font-size: 0.65rem;
+    }
+    
+    .slot-count {
+        font-size: 0.65rem;
+    }
+    
+    .modal-content {
+        width: 98%;
+        max-width: 350px;
+        margin: 5px;
+    }
+    
+    .modal-header {
+        padding: 0.75rem;
+    }
+    
+    .modal-header h2 {
+        font-size: 1rem;
+    }
+    
+    #eventForm {
+        padding: 0.75rem;
+    }
+    
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 0.4rem;
+        font-size: 0.75rem;
+    }
+    
+    .form-actions {
+        padding: 0.75rem;
+        gap: 0.4rem;
+    }
+    
+    .btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        height: 28px;
+        border-radius: 14px;
+    }
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+    /* Hide elements that don't work well on mobile */
+    .logo-section {
+        display: none;
+    }
+    
+    /* Make scrollable areas more touch-friendly */
+    .week-calendar {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    
+    /* Improve tap targets */
+    .event-card {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+    
+    .btn, .nav-btn, .icon-circle {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Prevent zoom on form inputs */
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .btn-outline,
+    .icon-circle,
+    .nav-btn {
+        border-width: 0.5px;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .pusa-corner {
+        top: 5px;
+        left: 5px;
+    }
+    
+    .pusa-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .current-date {
+        font-size: 24px;
+        top: 60px;
+    }
+    
+    .date-header {
+        top: 60px;
+    }
+    
+    .week-calendar {
+        top: 100px;
+    }
+    
+    .top-header {
+        top: 2px;
+        padding: 4px;
+    }
+    
+    #prevWeek,
+    #nextWeek,
+    #todayBtn {
+        top: 90px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .top-header,
+    .pusa-corner,
+    .nav-btn,
+    #prevWeek,
+    #nextWeek,
+    #todayBtn {
+        display: none;
+    }
+    
+    .week-calendar {
+        position: static;
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    .current-date {
+        position: static;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .date-header {
+        position: static;
+        margin-bottom: 20px;
+    }
+    
+    body {
+        font-size: 12px;
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: rgba(0, 0, 0, 0.5);
+        --border-light: rgba(0, 0, 0, 0.7);
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+    
+    .btn-outline,
+    .icon-circle,
+    .nav-btn {
+        border-width: 2px;
+    }
+}
+
+
