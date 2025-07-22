@@ -117,6 +117,12 @@ function generateWeekData(date) {
 
 // Routes
 app.get('/', (req, res) => {
+    res.render('welcome', {
+        layout: 'main'
+    });
+});
+
+app.get('/scheduler', (req, res) => {
     const currentDate = moment();
     const weekDate = req.query.week ? moment(req.query.week) : currentDate;
     
@@ -191,6 +197,104 @@ app.delete('/events/:id', (req, res) => {
     } else {
         res.status(404).json({ error: 'Event not found' });
     }
+});
+
+// Sample data for demo purposes
+const sampleUser = {
+    fullName: "John Doe",
+    email: "johndoe@dlsu.edu.ph",
+    idNumber: "12345678",
+    role: "Volunteer"
+};
+
+const sampleCats = [
+    {
+        id: 1,
+        name: "Nightowl",
+        description: "A cuddly tabby with a heart of gold. Nightowl loves basking in sunlight and purring contentedly when he's being petted. Will you be bringing him to his new home?",
+        image: null,
+        status: "Available"
+    },
+    {
+        id: 2,
+        name: "Dweeby",
+        description: "Sleepy and lovingly chubby, this orange tabby has big eyes that are sure to melt your heart. He is a quiet type but still has his playful moments!",
+        image: null,
+        status: "Available"
+    },
+    {
+        id: 3,
+        name: "Jackpot",
+        description: "Friendly and outgoing, Jackpot is the perfect companion. This sweet cat loves children and would make a wonderful addition to any family seeking a pet to love and cherish.",
+        image: null,
+        status: "Available"
+    }
+];
+
+// New page routes
+app.get('/login', (req, res) => {
+    res.render('login', {
+        layout: 'main'
+    });
+});
+
+app.get('/signup', (req, res) => {
+    res.render('signup', {
+        layout: 'main'
+    });
+});
+
+app.get('/about', (req, res) => {
+    res.render('about', {
+        layout: 'main'
+    });
+});
+
+app.get('/profile', (req, res) => {
+    // Sample data for demo
+    const userData = {
+        ...sampleUser,
+        feedingCount: 3,
+        feedingProgress: 60,
+        nookCount: 2,
+        nookProgress: 40,
+        upcomingDuties: [
+            { date: "July 18, 2PM", type: "feeding" },
+            { date: "July 18, 2PM", type: "nook" }
+        ],
+        upcomingShifts: [
+            { date: "July 18, 2PM", type: "feeding" },
+            { date: "July 18, 2PM", type: "nook" }
+        ]
+    };
+    
+    res.render('profile', {
+        layout: 'main',
+        user: userData
+    });
+});
+
+app.get('/fur-adoption', (req, res) => {
+    res.render('fur-adoption', {
+        layout: 'main',
+        cats: sampleCats
+    });
+});
+
+// Authentication routes (placeholder)
+app.post('/login', (req, res) => {
+    // Handle login logic here
+    res.json({ message: 'Login endpoint - to be implemented' });
+});
+
+app.post('/signup', (req, res) => {
+    // Handle signup logic here
+    res.json({ message: 'Signup endpoint - to be implemented' });
+});
+
+app.post('/adoption-interview', (req, res) => {
+    // Handle adoption interview booking
+    res.json({ message: 'Interview booked successfully - to be implemented' });
 });
 
 app.listen(PORT, () => {

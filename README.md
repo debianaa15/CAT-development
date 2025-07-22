@@ -1,24 +1,32 @@
-# Modern Scheduler
+# CAT - Cat Adoption and Training System
 
-A beautiful, modern scheduler application with calendar UI built using Node.js, Express, Handlebars, and CSS.
+A comprehensive platform for DLSU PUSA (Professors for the Upliftment of Society's Animals) to manage cat adoption, volunteer scheduling, and training programs.
 
 ## Features
 
-- **Modern UI Design**: Clean, responsive interface with modern design principles
-- **Calendar View**: Monthly calendar with intuitive navigation
-- **Event Management**: Create, edit, and delete events with ease
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
-- **Interactive Elements**: Hover effects, smooth animations, and transitions
-- **Keyboard Shortcuts**: Quick access with keyboard shortcuts (Ctrl/Cmd + N for new event, Escape to close modals)
-- **Real-time Updates**: Automatic page refresh after event operations
+- **User Authentication**: Sign up and login system for volunteers, trainers, and admins
+- **Cat Adoption Management**: Browse available cats and book adoption interviews
+- **Volunteer Scheduling**: Interactive calendar for feeding and nook duties
+- **Profile Management**: Track volunteer quotas and upcoming duties
+- **Modern UI Design**: Clean, responsive interface with DLSU PUSA branding
+- **Role-based Access**: Different interfaces for Volunteers, Trainers, and Admins
+
+## Pages
+
+- **Welcome Page**: Landing page with navigation to all features
+- **Login/Signup**: Authentication system
+- **Profile**: User information and quota tracking
+- **Fur Adoption**: Cat profiles and adoption interview booking
+- **About PUSA**: Organization information and donation channels
+- **Scheduler**: Weekly calendar for volunteer duties (original functionality)
 
 ## Technologies Used
 
 - **Backend**: Node.js with Express.js
 - **Template Engine**: Handlebars.js
 - **Styling**: Modern CSS with CSS Grid and Flexbox
-- **Icons**: Font Awesome 6
-- **Typography**: Inter font family
+- **Database**: MySQL (schema defined, integration pending)
+- **Typography**: Poppins and Inter font families
 - **Date Handling**: Moment.js
 
 ## Installation
@@ -44,88 +52,45 @@ A beautiful, modern scheduler application with calendar UI built using Node.js, 
 
 2. Open your browser and navigate to `http://localhost:3000`
 
-3. Use the scheduler:
-   - Click "Add Event" to create new events
-   - Click on calendar days to add events for specific dates
-   - Click on existing events to edit them
-   - Use the edit/delete buttons in the events sidebar
-   - Navigate between months using the arrow buttons
-   - Click "Today" to jump to the current month
+3. Available routes:
+   - `/` - Welcome page
+   - `/login` - User login
+   - `/signup` - User registration
+   - `/profile` - User profile and quota tracking
+   - `/fur-adoption` - Cat adoption page
+   - `/about` - About PUSA organization
+   - `/scheduler` - Weekly volunteer scheduler
 
-## Features Overview
+## Database Schema
 
-### Calendar Interface
-- Monthly view with clear day separation
-- Today's date is highlighted
-- Events are displayed as colored blocks on calendar days
-- Smooth hover effects and transitions
+The application includes a comprehensive MySQL schema (`database/schema.sql`) with tables for:
 
-### Event Management
-- Create events with title, date, time, and description
-- Edit existing events by clicking on them
-- Delete events with confirmation
-- Events are displayed in a sidebar with full details
+- **Users**: Volunteer, trainer, and admin accounts
+- **Cats**: Cat profiles with adoption status
+- **Feeding Slots**: Volunteer feeding schedules
+- **Nook Slots**: Shelter area volunteer schedules
+- **Signups**: Volunteer activity tracking
+- **Adoption Applications**: Cat adoption management
 
-### Responsive Design
-- Mobile-first approach
-- Adapts to different screen sizes
-- Touch-friendly interface on mobile devices
+## Development Status
 
-### Modern UI Elements
-- Clean, professional design
-- Subtle shadows and animations
-- Consistent color scheme
-- Accessible design patterns
-
-## API Endpoints
-
-- `GET /` - Main calendar view
-- `GET /events` - Get all events (JSON)
-- `POST /events` - Create new event
-- `PUT /events/:id` - Update event
-- `DELETE /events/:id` - Delete event
-
-## Customization
-
-The application is highly customizable:
-
-- **Colors**: Edit CSS variables in `public/css/style.css`
-- **Fonts**: Change font families in the CSS
-- **Layout**: Modify grid layouts for different arrangements
-- **Features**: Add new functionality by extending the JavaScript classes
-
-## Browser Support
-
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-- Mobile browsers
-
-## Development
-
-The project structure:
-```
-├── server.js              # Main server file
-├── package.json           # Dependencies
-├── views/
-│   ├── layouts/
-│   │   └── main.handlebars # Main layout template
-│   └── index.handlebars    # Calendar view template
-└── public/
-    ├── css/
-    │   └── style.css       # Main stylesheet
-    └── js/
-        └── script.js       # Client-side JavaScript
-```
+- ✅ UI Templates and styling complete
+- ✅ Basic routing and navigation
+- ✅ Responsive design for mobile/desktop
+- ⏳ Database integration (pending)
+- ⏳ Authentication system (pending)
+- ⏳ Cat profile management (pending)
+- ⏳ Volunteer scheduling logic (pending)
 
 ## Contributing
 
-Feel free to contribute to this project by:
-- Reporting bugs
-- Suggesting new features
-- Improving the UI/UX
-- Adding new functionality
+This is an academic project for ITISDEV course. Future improvements can include:
+- Database connectivity with MySQL
+- User authentication and session management
+- Cat photo upload functionality
+- Email notifications for adoptions
+- Advanced volunteer scheduling algorithms
+- Admin dashboard for managing cats and users
 
 ## License
 

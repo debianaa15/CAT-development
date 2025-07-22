@@ -1,7 +1,7 @@
 {
-  "name": "modern-scheduler",
+  "name": "cat-dlsu-pusa",
   "version": "1.0.0",
-  "description": "A modern scheduler application with calendar UI",
+  "description": "Cat Adoption and Training system for DLSU PUSA - A volunteer management and cat adoption platform",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
