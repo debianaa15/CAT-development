@@ -40,37 +40,37 @@ class ModernScheduler {
         const homeBtn = document.getElementById('homeBtn');
         const furAdoptionBtn = document.getElementById('furAdoptionBtn');
         const skillsAssessmentBtn = document.getElementById('skillsAssessmentBtn');
-        const dashboardIcon = document.getElementById('dashboardIcon');
-        const menuIcon = document.getElementById('menuIcon');
+        const dashboardBtn = document.getElementById('dashboardBtn');
+        const menuBtn = document.getElementById('menuBtn');
 
-        // Header button clicks - create events when clicked
+        // Header button clicks - navigate to pages
         if (homeBtn) {
             homeBtn.addEventListener('click', () => {
-                this.openModal();
+                window.location.href = '/';
             });
         }
 
         if (furAdoptionBtn) {
             furAdoptionBtn.addEventListener('click', () => {
-                this.openModal();
+                window.location.href = '/fur-adoption';
             });
         }
 
         if (skillsAssessmentBtn) {
             skillsAssessmentBtn.addEventListener('click', () => {
-                this.openModal();
+                alert('Skills Assessment functionality to be implemented');
             });
         }
 
-        if (dashboardIcon) {
-            dashboardIcon.addEventListener('click', () => {
-                this.showDashboard();
+        if (dashboardBtn) {
+            dashboardBtn.addEventListener('click', () => {
+                window.location.href = '/profile';
             });
         }
 
-        if (menuIcon) {
-            menuIcon.addEventListener('click', () => {
-                this.toggleMenu();
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                window.location.href = '/about';
             });
         }
 
