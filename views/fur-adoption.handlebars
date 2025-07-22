@@ -1,0 +1,161 @@
+<!-- Fur Adoption Page -->
+<div class="page-container">
+    <!-- Header Navigation -->
+    <div class="page-header">
+        <div class="logo-section">
+            <img src="/img/pusa.png" alt="DLSU PUSA" class="page-logo">
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="icon-circle" id="profileBtn" aria-label="Profile">
+                <img src="/img/dashboard.png" alt="Profile" class="circle-icon">
+            </button>
+            <button class="btn-outline active" id="furAdoptionBtn">Fur Adoption</button>
+            <button class="icon-circle" id="menuBtn" aria-label="Menu">
+                <img src="/img/menu.png" alt="Menu" class="menu-icon">
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="adoption-header">
+            <h1 class="page-title">Fur Adoption</h1>
+        </div>
+
+        <!-- Adoption Process Info -->
+        <div class="adoption-info">
+            <h3 class="info-title">Adoption Process</h3>
+            <p class="info-text">
+                Interested in giving a cat their fur-ever home?<br>
+                Kindly book an interview with our team. One of our PUSA admins will review your application to ensure each cat goes to a safe and loving environment.
+            </p>
+            <div class="info-note">
+                <span class="note-icon">ℹ</span>
+                <span>Note: Interviews are required before any adoption can proceed.</span>
+            </div>
+        </div>
+
+        <!-- Cats Grid -->
+        <div class="cats-grid">
+            {{#each cats}}
+            <div class="cat-card" data-cat-id="{{this.id}}">
+                <div class="cat-image">
+                    {{#if this.image}}
+                    <img src="{{this.image}}" alt="{{this.name}}" class="cat-photo">
+                    {{else}}
+                    <div class="cat-placeholder"></div>
+                    {{/if}}
+                </div>
+                
+                <div class="cat-info">
+                    <h4 class="cat-name">{{this.name}}</h4>
+                    <p class="cat-description">{{this.description}}</p>
+                    
+                    <button class="btn-adoption" onclick="bookInterview('{{this.id}}', '{{this.name}}')">
+                        Book Adoption Interview
+                    </button>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <!-- Cat Mascots -->
+    <div class="cat-mascot adoption-cat-1">
+        <img src="/img/pusa.png" alt="PUSA Cat" class="mascot-img">
+    </div>
+    <div class="cat-mascot adoption-cat-2">
+        <img src="/img/pusa.png" alt="PUSA Cat" class="mascot-img">
+    </div>
+</div>
+
+<!-- Interview Modal -->
+<div id="interviewModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Book Adoption Interview</h2>
+            <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        
+        <form id="interviewForm">
+            <input type="hidden" id="catId" name="catId">
+            
+            <div class="form-group">
+                <label for="catName">Cat Name</label>
+                <input type="text" id="catName" name="catName" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="interviewDate">Preferred Interview Date</label>
+                <input type="date" id="interviewDate" name="interviewDate" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="interviewTime">Preferred Interview Time</label>
+                <input type="time" id="interviewTime" name="interviewTime" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="tel" id="contactNumber" name="contactNumber" placeholder="Your contact number" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Additional Message (Optional)</label>
+                <textarea id="message" name="message" rows="3" placeholder="Tell us why you'd like to adopt this cat..."></textarea>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                <button type="submit" class="btn-primary">Book Interview</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Navigation functionality
+document.getElementById('profileBtn').addEventListener('click', function() {
+    window.location.href = '/profile';
+});
+
+document.getElementById('menuBtn').addEventListener('click', function() {
+    alert('Menu functionality to be implemented');
+});
+
+// Interview booking functionality
+function bookInterview(catId, catName) {
+    document.getElementById('catId').value = catId;
+    document.getElementById('catName').value = catName;
+    document.getElementById('interviewModal').classList.add('active');
+}
+
+// Modal controls
+document.getElementById('closeModal').addEventListener('click', function() {
+    closeModal();
+});
+
+document.getElementById('cancelBtn').addEventListener('click', function() {
+    closeModal();
+});
+
+document.getElementById('interviewModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+function closeModal() {
+    document.getElementById('interviewModal').classList.remove('active');
+    document.getElementById('interviewForm').reset();
+}
+
+// Form submission
+document.getElementById('interviewForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Handle interview booking logic here
+    alert('Interview booking functionality to be implemented');
+    closeModal();
+});
+</script>

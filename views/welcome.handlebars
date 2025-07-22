@@ -1,0 +1,234 @@
+<!-- Welcome/Home Page -->
+<div class="welcome-container">
+    <div class="welcome-content">
+        <div class="welcome-header">
+            <img src="/img/pusa.png" alt="DLSU PUSA" class="welcome-logo">
+            <h1 class="welcome-title">Welcome to CAT</h1>
+            <p class="welcome-subtitle">Cat Adoption and Training System</p>
+            <p class="welcome-description">DLSU PUSA - Caring for our furry friends and connecting them with loving homes</p>
+        </div>
+        
+        <div class="welcome-actions">
+            <a href="/login" class="btn-welcome btn-primary">Sign In</a>
+            <a href="/signup" class="btn-welcome btn-secondary">Create Account</a>
+        </div>
+        
+        <div class="welcome-links">
+            <a href="/about" class="welcome-link">Learn About PUSA</a>
+            <a href="/fur-adoption" class="welcome-link">View Available Cats</a>
+        </div>
+    </div>
+    
+    <!-- Floating cats for decoration -->
+    <div class="floating-cats">
+        <div class="floating-cat cat-1">
+            <img src="/img/pusa.png" alt="Cat" class="floating-cat-img">
+        </div>
+        <div class="floating-cat cat-2">
+            <img src="/img/pusa.png" alt="Cat" class="floating-cat-img">
+        </div>
+        <div class="floating-cat cat-3">
+            <img src="/img/pusa.png" alt="Cat" class="floating-cat-img">
+        </div>
+    </div>
+</div>
+
+<style>
+.welcome-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    position: relative;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.welcome-content {
+    text-align: center;
+    max-width: 600px;
+    z-index: 2;
+    position: relative;
+}
+
+.welcome-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 2rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.welcome-title {
+    color: var(--primary-color);
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.welcome-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.welcome-description {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.btn-welcome {
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 150px;
+    display: inline-block;
+}
+
+.btn-welcome.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border: 2px solid var(--primary-color);
+}
+
+.btn-welcome.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-welcome.btn-secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-welcome.btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.welcome-links {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.welcome-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.welcome-link:hover {
+    color: var(--primary-color);
+    background: rgba(2, 82, 46, 0.1);
+    transform: translateY(-1px);
+}
+
+.floating-cats {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.floating-cat {
+    position: absolute;
+    opacity: 0.3;
+}
+
+.cat-1 {
+    top: 10%;
+    left: 10%;
+    animation: float 4s ease-in-out infinite;
+}
+
+.cat-2 {
+    top: 20%;
+    right: 15%;
+    animation: float 5s ease-in-out infinite reverse;
+}
+
+.cat-3 {
+    bottom: 15%;
+    left: 15%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-cat-img {
+    width: 80px;
+    height: auto;
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+    }
+    50% { 
+        transform: translateY(-20px) rotate(5deg); 
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 2.5rem;
+    }
+    
+    .welcome-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .welcome-description {
+        font-size: 1rem;
+    }
+    
+    .welcome-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .welcome-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .floating-cat {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-title {
+        font-size: 2rem;
+    }
+    
+    .btn-welcome {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        min-width: 120px;
+    }
+}
+</style>

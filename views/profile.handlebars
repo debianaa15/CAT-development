@@ -1,0 +1,139 @@
+<!-- Profile Page -->
+<div class="page-container">
+    <!-- Header Navigation -->
+    <div class="page-header">
+        <div class="logo-section">
+            <img src="/img/pusa.png" alt="DLSU PUSA" class="page-logo">
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="icon-circle" id="profileBtn" aria-label="Profile">
+                <img src="/img/dashboard.png" alt="Profile" class="circle-icon">
+            </button>
+            <button class="btn-outline" id="furAdoptionBtn">Fur Adoption</button>
+            <button class="icon-circle" id="menuBtn" aria-label="Menu">
+                <img src="/img/menu.png" alt="Menu" class="menu-icon">
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="back-nav">
+            <button class="back-btn" onclick="history.back()">
+                <img src="/img/back.png" alt="Back" class="back-icon">
+                <span>My Profile</span>
+            </button>
+        </div>
+
+        <div class="profile-content">
+            <!-- Profile Information Card -->
+            <div class="profile-card">
+                <h3 class="card-title">Profile Information</h3>
+                <div class="profile-details">
+                    <div class="profile-item">
+                        <span class="profile-label">Full Name:</span>
+                        <span class="profile-value">{{user.fullName}}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Email:</span>
+                        <span class="profile-value">{{user.email}}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">ID Number:</span>
+                        <span class="profile-value">{{user.idNumber}}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Role:</span>
+                        <span class="profile-value profile-role">{{user.role}}</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Password:</span>
+                        <span class="profile-value">••••••••••••</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quota Tracker Card (for Volunteers) -->
+            {{#if (eq user.role "Volunteer")}}
+            <div class="quota-card">
+                <div class="quota-header">
+                    <h3 class="card-title">Quota Tracker</h3>
+                    <span class="quota-period">S.Y 2024 - 2025 Term 3</span>
+                </div>
+                <div class="quota-items">
+                    <div class="quota-item">
+                        <span class="quota-label">Feeding</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill feeding-progress" style="width: {{feedingProgress}}%"></div>
+                        </div>
+                        <span class="quota-count">{{feedingCount}}/5</span>
+                    </div>
+                    <div class="quota-item">
+                        <span class="quota-label">Nook</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill nook-progress" style="width: {{nookProgress}}%"></div>
+                        </div>
+                        <span class="quota-count">{{nookCount}}/5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheduled Duties Card -->
+            <div class="duties-card">
+                <div class="duties-header">
+                    <h3 class="card-title">Scheduled Duties</h3>
+                    <span class="duties-week">Week 10</span>
+                </div>
+                <div class="duties-list">
+                    {{#each upcomingDuties}}
+                    <div class="duty-item {{this.type}}">
+                        <span class="duty-date">{{this.date}}</span>
+                        <span class="duty-type">{{this.type}}</span>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+
+            <!-- Upcoming Shifts Card (for Trainers) -->
+            {{#if (eq user.role "Trainer")}}
+            <div class="shifts-card">
+                <div class="shifts-header">
+                    <h3 class="card-title">Upcoming Shifts</h3>
+                    <span class="shifts-week">Week 10</span>
+                </div>
+                <div class="shifts-list">
+                    {{#each upcomingShifts}}
+                    <div class="shift-item {{this.type}}">
+                        <span class="shift-date">{{this.date}}</span>
+                        <span class="shift-type">{{this.type}}</span>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+
+    <!-- Cat Mascot -->
+    <div class="cat-mascot profile-cat">
+        <img src="/img/pusa.png" alt="PUSA Cat" class="mascot-img">
+    </div>
+</div>
+
+<script>
+// Navigation functionality
+document.getElementById('profileBtn').addEventListener('click', function() {
+    window.location.href = '/profile';
+});
+
+document.getElementById('furAdoptionBtn').addEventListener('click', function() {
+    window.location.href = '/fur-adoption';
+});
+
+document.getElementById('menuBtn').addEventListener('click', function() {
+    // Menu functionality
+    alert('Menu functionality to be implemented');
+});
+</script>

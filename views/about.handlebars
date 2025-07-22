@@ -1,0 +1,121 @@
+<!-- About PUSA Page -->
+<div class="page-container">
+    <!-- Header Navigation -->
+    <div class="page-header">
+        <div class="logo-section">
+            <img src="/img/pusa.png" alt="DLSU PUSA" class="page-logo">
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="icon-circle" id="profileBtn" aria-label="Profile">
+                <img src="/img/dashboard.png" alt="Profile" class="circle-icon">
+            </button>
+            <button class="btn-outline" id="furAdoptionBtn">Fur Adoption</button>
+            <button class="icon-circle" id="menuBtn" aria-label="Menu">
+                <img src="/img/menu.png" alt="Menu" class="menu-icon">
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="back-nav">
+            <button class="back-btn" onclick="history.back()">
+                <img src="/img/back.png" alt="Back" class="back-icon">
+                <span>About PUSA</span>
+            </button>
+        </div>
+
+        <div class="about-content">
+            <div class="about-section">
+                <h2 class="section-title">Who we are</h2>
+                <div class="about-text">
+                    <p><strong>DLSU-PUSA (Professors for the Upliftment of Society's Animals)</strong> is the org that cares mainly for the Manila campus cats—feeding, neutering/spaying to control the cat population, vaccination/antirabies shots, medical care, adopting/rehoming of stray cats & occasionally even stray dogs, etc.</p>
+                    
+                    <p>It has four core members: active faculty, retired high school/undergraduate/master/doctoral students, and alumni volunteers and PHSAGROTHER. PUSA is under the Office of the Vice President for Lasallian Mission.</p>
+                    
+                    <p>DLSU has guidelines on animals on campus approved in the Chancellor's Council consistent with Laudato Si' and the university's advocacy on the environment, & cultivation of compassion & responsibility for other species who share this planet with humans.</p>
+                </div>
+            </div>
+
+            <div class="info-sections">
+                <div class="info-section">
+                    <h3 class="info-title">Social Media Links</h3>
+                    <p class="info-subtitle">Stay connected with PUSA's latest activities, adoptables, and volunteer updates</p>
+                    
+                    <div class="social-links">
+                        <div class="social-item">
+                            <div class="social-icon facebook-icon"></div>
+                            <span>DLSU PUSA</span>
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon instagram-icon"></div>
+                            <span>dlsupusaofficial</span>
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon tiktok-icon"></div>
+                            <span>dlsupusaofficial</span>
+                        </div>
+                        <div class="social-item">
+                            <div class="social-icon email-icon"></div>
+                            <span>pusa@dlsu.edu.ph</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="info-title">Donation Channels</h3>
+                    <p class="info-subtitle">Help us care for and rehome our rescues. Every peso counts!</p>
+                    <p class="info-note">Kindly send a receipt to DLSU PUSA's official social media accounts:</p>
+                    
+                    <div class="donation-methods">
+                        <div class="donation-item">
+                            <div class="donation-logo bdo-logo"></div>
+                            <div class="donation-info">
+                                <div class="account-number">000230155863</div>
+                                <div class="account-name">Juliana P. Chuah</div>
+                            </div>
+                        </div>
+                        
+                        <div class="donation-item">
+                            <div class="donation-logo landbank-logo"></div>
+                            <div class="donation-info">
+                                <div class="account-number">5277054894</div>
+                                <div class="account-name">Mary Laureen Velasco</div>
+                            </div>
+                        </div>
+                        
+                        <div class="donation-item">
+                            <div class="donation-logo gcash-logo"></div>
+                            <div class="donation-info">
+                                <div class="account-number">09279358243</div>
+                                <div class="account-name">M*** B***</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cat Mascot -->
+    <div class="cat-mascot about-cat">
+        <img src="/img/pusa.png" alt="PUSA Cat" class="mascot-img">
+    </div>
+</div>
+
+<script>
+// Navigation functionality
+document.getElementById('profileBtn').addEventListener('click', function() {
+    window.location.href = '/profile';
+});
+
+document.getElementById('furAdoptionBtn').addEventListener('click', function() {
+    window.location.href = '/fur-adoption';
+});
+
+document.getElementById('menuBtn').addEventListener('click', function() {
+    // Menu functionality
+    alert('Menu functionality to be implemented');
+});
+</script>
