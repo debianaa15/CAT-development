@@ -1,14 +1,17 @@
 const express = require('express');
+const mongoose = require('mongoose');
+
 const { engine } = require('express-handlebars');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const path = require('path');
 
 
-// testing
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+mongoose.connect('mongodb://localhost:27017/DLSU_PUSA_DB')
+
+const PORT = process.env.PORT || 27017;
 
 // Handlebars configuration
 app.engine('handlebars', engine({
