@@ -1,17 +1,29 @@
 const express = require('express');
-const mongoose = require('mongoose');
-
 const { engine } = require('express-handlebars');
 const bodyParser = require('body-parser');
 const moment = require('moment');
+const mongoose = require('mongoose');
 const path = require('path');
 
+// testing
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-mongoose.connect('mongodb://localhost:27017/DLSU_PUSA_DB')
+// Mongoose configuration
 
-const PORT = process.env.PORT || 27017;
+mongoose.connect('mongodb://localhost:27017/DLSUPUSA', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Connected to MongoDB");
+}).catch(err => {
+    console.error("MongoDB connection error:", err);
+});
+
+// Mongoose models (for session)
+
+const User = require('./models/user');
 
 // Handlebars configuration
 app.engine('handlebars', engine({
@@ -288,15 +300,70 @@ app.get('/fur-adoption', (req, res) => {
 });
 
 // Authentication routes (placeholder)
-app.post('/login', (req, res) => {
-    // Handle login logic here
-    res.json({ message: 'Login endpoint - to be implemented' });
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    try {
+        // Find user by email
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        // Compare passwords
+        const isMatch = await user.comparePassword(password);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        // Success – login logic (e.g., session, token) would go here
+        res.status(200).json({ message: 'Login successful', user: {
+            name: user.user_name,
+            role: user.user_role
+            // You can include other fields here as needed, but don't send the password
+        }});
+
+    } catch (err) {
+        console.error('Login error:', err);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
 });
 
-app.post('/signup', (req, res) => {
-    // Handle signup logic here
-    res.json({ message: 'Signup endpoint - to be implemented' });
+app.post('/signup', async (req, res) => {
+    const { firstName, lastName, dlsuEmail, idNumber, role, password } = req.body;
+
+    if (!firstName || !lastName || !dlsuEmail || !idNumber || !role || !password) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    try {
+        const existingUser = await User.findOne({ email: dlsuEmail });
+        if (existingUser) {
+            return res.status(409).json({ message: 'Email already registered' });
+        }
+
+        const newUser = new User({
+            user_name: `${firstName} ${lastName}`,  // Combine first + last
+            email: dlsuEmail,
+            user_password: password,               // Will be hashed by pre-save middleware
+            user_role: role
+        });
+
+        await newUser.save();
+        res.status(201).json({ message: 'User registered successfully' });
+
+    } catch (err) {
+        console.error('Signup error:', err);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
 });
+
 
 app.post('/adoption-interview', (req, res) => {
     // Handle adoption interview booking
