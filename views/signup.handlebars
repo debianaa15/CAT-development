@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="/css/signupstyle.css">
+<script src="/js/signup.js"></script>
+<div class="signup-bg">
+  <div class="signup-card">
+    <form class="signup-form" method="POST" action="/signup">
+      <div class="signup-title">Create an account</div>
+      <div class="signup-fields">
+        <div class="signup-row">
+          <div class="signup-field">
+            <label class="signup-label" for="firstName">First Name</label>
+            <input class="signup-input" type="text" id="firstName" name="firstName" placeholder="First name" required />
+          </div>
+          <div class="signup-field">
+            <label class="signup-label" for="lastName">Last Name</label>
+            <input class="signup-input" type="text" id="lastName" name="lastName" placeholder="Last name" required />
+          </div>
+        </div>
+        <div class="signup-field">
+          <label class="signup-label" for="email">DLSU Email</label>
+          <input class="signup-input" type="email" id="email" name="email" placeholder="Your DLSU email address" required />
+        </div>
+        <div class="signup-field">
+          <label class="signup-label" for="idNumber">ID Number</label>
+          <input class="signup-input" type="text" id="idNumber" name="idNumber" placeholder="Your ID number" required />
+        </div>
+       
+        <div class="signup-field">
+          <label class="signup-label">Role</label>
+          <div class="signup-role-options">
+            <label>
+              <input type="radio" name="role" value="trainer" required />
+              <span class="signup-radio"></span>
+              Trainer
+            </label>
+            <label>
+              <input type="radio" name="role" value="volunteer" required />
+              <span class="signup-radio"></span>
+              Volunteer
+            </label>
+          </div>
+           <div class="signup-field">
+          <label class="signup-label" for="password">Password</label>
+          <input class="signup-input" type="password" id="password" name="password" placeholder="Your password" required />
+        </div>
+        </div>
+      </div>
+      <button class="signup-button" type="submit">Sign Up</button>
+      <div class="signup-footer">
+        <span>Already a member?</span>
+        <a class="signup-signin-link" href="/">Sign in here!</a>
+      </div>
+    </form>
+  </div>
+</div>

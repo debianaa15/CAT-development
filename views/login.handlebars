@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="/css/signinstyle.css">
+<script src="/js/signin.js"></script>
+<div class="signin-bg">
+  <div class="signin-card">
+    <form id="loginForm" class="signin-form" method="POST" action="/loginForm">
+      <img class="signin-image" src="/img/pusa.png" alt="Sign In Image" />
+      <div class="signin-title">Sign In</div>
+      <div class="signin-fields">
+        <label class="signin-label" for="email">Email</label>
+        <input class="signin-input" type="email" id="email" name="email" placeholder="Enter your email" required />
+        <label class="signin-label" for="password">Password</label>
+        <input class="signin-input" type="password" id="password" name="password" placeholder="Enter your password" required />
+      </div>
+      <button class="signin-button" type="submit">Sign In</button>
+      <div class="signin-footer">
+        <span>Don’t have an account yet?</span>
+        <a class="signin-signup-link" href="/signup">Sign up here!</a>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,251 @@
+/* about.css for About PUSA page */
+
+.about-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 52px;
+  margin-bottom: 32px;
+  margin-left: 4rem;
+}
+
+.about-menuback {
+  border-radius: 25px;
+  border: 1.5px solid #02522E;
+  display: flex;
+  width: 40px;
+  height: 39px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.about-title {
+  font-size: 2rem;
+  color: #02522E;
+  font-weight: 600;
+}
+
+.profile-info-section {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.profile-info-cat-left {
+  position: absolute;
+  left: 3.8rem;
+  top: 32px;
+  width: 100px;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
+}
+
+.profile-info-card {
+    margin-left: 10rem;
+    width: 519px;
+height: 362px;
+flex-shrink: 0;
+gap:10px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+border: 0.75px solid #EBEBEB;
+background: var(--White, #FFF);
+box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.10), 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+  position: relative;
+  z-index: 2;
+
+}
+
+.profile-info-card h2 {
+  margin-top: 16px;
+  margin-left: 2rem;
+  color: #02522E;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+.profile-info-card p {
+  color: #02522E;
+  font-size: 1.08rem;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-info-card strong {
+  font-weight: 500;
+  min-width: 110px;
+  display: inline-block;
+}
+.profile-info-card span,
+.profile-info-card a {
+  color: #02522E;
+  font-weight: 600;
+  font-size: 1.08rem;
+}
+.profile-password {
+  letter-spacing: 2px;
+  font-size: 1.1em;
+}
+
+.profile-info-card p{
+    margin-left: 2rem; 
+}
+.profile-info-card .profile-cat-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 16px auto 0 2rem;
+  display: block;
+}
+
+.profile-quota-card{
+    margin-left: 10rem;
+    width: 656px;
+    height: 211px;
+    flex-shrink: 0;
+    gap:10px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    border: 0.75px solid #EBEBEB;
+    background: var(--White, #FFF);
+    box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.10), 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+    position: relative;
+    z-index: 2;
+}
+
+.profile-quota-card h2,.profile-schedule-card h2  {
+  margin-top: 16px;
+  margin-left: 2rem;
+  color: #02522E;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+.profile-quota-card p {
+  color: #02522E;
+  font-size: 1.08rem;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quota-bar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 18px;
+}
+.quota-label {
+  color: #02522E;
+  font-size: 1.15rem;
+  font-weight: 400;
+  min-width: 90px;
+  margin-left: 2rem;
+}
+.quota-bar {
+  margin-left: 1.5rem;
+}
+.quota-count {
+  color: #02522E;
+  font-size: 1.15rem;
+  font-weight: 400;
+  margin-left: 1rem;
+}
+
+.quota-bar {
+
+  display: flex;
+  width: 20rem;
+  height: 25px;
+  background: none;
+  border-radius: 8px;
+  overflow: hidden;
+  gap: 0;
+}
+.quota-bar-rect {
+  width: 40px;
+  height: 100%;
+  display: inline-block;
+}
+.quota-bar-rect.rect1 { background: #EBF3E6; }
+.quota-bar-rect.rect2 { background: #D9E8D0; }
+.quota-bar-rect.rect3 { background: #C1DFAF; }
+.quota-bar-rect.rect4 { background: #9FCD83; }
+.quota-bar-rect.rect5 { background: #95BB7E; }
+
+.profile-schedule-card{
+    margin-left: 52.5rem;
+    margin-top: -8rem;
+    width: 656px;
+    height: 211px;
+    flex-shrink: 0;
+    gap:10px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    border: 0.75px solid #EBEBEB;
+    background: var(--White, #FFF);
+    box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.10), 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+    z-index: 2;
+} 
+
+
+
+.profile-week {
+  color: #02522E;
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin-left: 20rem;
+}
+
+.profile-duty-item.feeding {
+margin-left: 2rem;
+  display: flex;
+  width: 583px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 365px;
+  border-radius: 5px;
+  background: #ECEDD6;
+  color: #02522E;
+  font-weight: 500;
+}
+
+.duty-type{
+    font-weight: 400;
+}
+.profile-duty-item.nook {
+  margin-top: 10px;
+  margin-left: 2rem;
+  display: flex;
+  width: 583px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 390px;
+  border-radius: 5px;
+  background: #D6EDDF;
+  color: #02522E;
+  font-weight: 500;
+}
+
+.profile-info-cat-right {
+  position: absolute;
+  right: -6.3rem;
+  top: 32px;
+  width: 100px;
+  height: auto;
+  object-fit: contain;
+ 
+}

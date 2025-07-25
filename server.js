@@ -7,6 +7,12 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+<<<<<<< Updated upstream
+=======
+// Global events array to avoid ReferenceError
+global.events = [];
+
+>>>>>>> Stashed changes
 // Handlebars configuration
 app.engine('handlebars', engine({
     defaultLayout: 'main',
@@ -43,55 +49,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// In-memory storage for demo purposes
-let events = [
-    {
-        id: 1,
-        title: "Team Meeting",
-        date: "2025-01-06",
-        startTime: "14:00",
-        endTime: "15:00",
-        description: "Weekly team sync meeting",
-        attendees: [
-            { initial: "A", name: "Alice" },
-            { initial: "B", name: "Bob" },
-            { initial: "C", name: "Charlie" }
-        ],
-        attendeeCount: 3,
-        maxAttendees: 5
-    },
-    {
-        id: 2,
-        title: "Project Review",
-        date: "2025-01-08",
-        startTime: "15:30",
-        endTime: "17:00",
-        description: "Quarterly project review",
-        attendees: [
-            { initial: "D", name: "David" },
-            { initial: "E", name: "Emma" }
-        ],
-        attendeeCount: 2,
-        maxAttendees: 4
-    },
-    {
-        id: 3,
-        title: "Client Call",
-        date: "2025-01-10",
-        startTime: "16:00",
-        endTime: "17:30",
-        description: "Call with new client",
-        attendees: [
-            { initial: "F", name: "Frank" },
-            { initial: "G", name: "Grace" },
-            { initial: "H", name: "Henry" },
-            { initial: "I", name: "Ivy" }
-        ],
-        attendeeCount: 4,
-        maxAttendees: 6
-    }
-];
-
 // Helper function to generate week data
 function generateWeekData(date) {
     const startOfWeek = moment(date).startOf('week');
@@ -99,7 +56,7 @@ function generateWeekData(date) {
     
     for (let i = 0; i < 7; i++) {
         const currentDay = startOfWeek.clone().add(i, 'day');
-        const dayEvents = events.filter(event => 
+        const dayEvents = global.events.filter(event => 
             moment(event.date).isSame(currentDay, 'day')
         );
         
@@ -115,15 +72,76 @@ function generateWeekData(date) {
     return weekDays;
 }
 
-// Routes
+// Redirect root URL to login page
 app.get('/', (req, res) => {
+<<<<<<< Updated upstream
+=======
+    res.redirect('/login');
+});
+
+// Fur Adoption route
+app.get('/furadoption', (req, res) => {
+  res.render('furadoption');
+});
+
+// Dashboard button route
+app.get('/dashboard', (req, res) => {
+  res.redirect('/index');
+});
+
+// Profile Settings route
+app.get('/profile-settings', (req, res) => {
+  res.redirect('/profile');
+});
+
+// About PUSA route
+app.get('/about-pusa', (req, res) => {
+  res.redirect('/about');
+});
+
+// Sign Out route
+app.get('/signout', (req, res) => {
+  // If you add session logic, clear it here
+  res.redirect('/login');
+});
+
+
+// Route for sign-in page
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+// Route for signup page
+app.get('/signup', (req, res) => {
+    res.render('signup');
+});
+
+// Handle sign-in form submission
+app.post('/loginForm', (req, res) => {
+    // Add authentication logic here 
+    res.redirect('/index');
+});
+
+// Route for about page
+app.get('/about', (req, res) => {
+    res.render('about');
+});
+
+app.get('/myprofile', (req, res) => {
+    res.render('myprofile');
+});
+
+app.get('/profile', (req, res) => {
+    res.render('profile'); // Render the profile page, not the layout
+});
+
+// Main page route
+app.get('/index', (req, res) => {
+>>>>>>> Stashed changes
     const currentDate = moment();
     const weekDate = req.query.week ? moment(req.query.week) : currentDate;
-    
     const weekDays = generateWeekData(weekDate);
     const monthName = weekDate.format('MMMM YYYY');
-    
-    // Time slots for 2 PM to 6 PM
     const timeSlots = [
         '2 PM',
         '3 PM', 
@@ -131,23 +149,46 @@ app.get('/', (req, res) => {
         '5 PM',
         '6 PM'
     ];
-    
     res.render('index', {
         weekDays,
         currentMonth: monthName,
         timeSlots,
-        events: events,
+        events: global.events,
+        currentWeek: weekDate.format('YYYY-MM-DD')
+    });
+});
+
+// Handle POST /signin for login form
+app.post('/signin', (req, res) => {
+    // Add authentication logic here if needed
+    // Render the main index page after successful sign in
+    const currentDate = moment();
+    const weekDate = req.query.week ? moment(req.query.week) : currentDate;
+    const weekDays = generateWeekData(weekDate);
+    const monthName = weekDate.format('MMMM YYYY');
+    const timeSlots = [
+        '2 PM',
+        '3 PM',
+        '4 PM',
+        '5 PM',
+        '6 PM'
+    ];
+    res.render('index', {
+        weekDays,
+        currentMonth: monthName,
+        timeSlots,
+        events: global.events,
         currentWeek: weekDate.format('YYYY-MM-DD')
     });
 });
 
 app.get('/events', (req, res) => {
-    res.json(events);
+    res.json(global.events);
 });
 
 app.post('/events', (req, res) => {
     const newEvent = {
-        id: events.length + 1,
+        id: global.events.length + 1,
         title: req.body.title,
         date: req.body.date,
         startTime: req.body.time,
@@ -158,24 +199,24 @@ app.post('/events', (req, res) => {
         maxAttendees: 5
     };
     
-    events.push(newEvent);
+    global.events.push(newEvent);
     res.json(newEvent);
 });
 
 app.put('/events/:id', (req, res) => {
     const eventId = parseInt(req.params.id);
-    const eventIndex = events.findIndex(event => event.id === eventId);
+    const eventIndex = global.events.findIndex(event => event.id === eventId);
     
     if (eventIndex !== -1) {
-        events[eventIndex] = {
-            ...events[eventIndex],
+        global.events[eventIndex] = {
+            ...global.events[eventIndex],
             title: req.body.title,
             date: req.body.date,
             startTime: req.body.time,
             endTime: req.body.endTime || moment(req.body.time, 'HH:mm').add(1, 'hour').format('HH:mm'),
             description: req.body.description || ''
         };
-        res.json(events[eventIndex]);
+        res.json(global.events[eventIndex]);
     } else {
         res.status(404).json({ error: 'Event not found' });
     }
@@ -183,10 +224,10 @@ app.put('/events/:id', (req, res) => {
 
 app.delete('/events/:id', (req, res) => {
     const eventId = parseInt(req.params.id);
-    const eventIndex = events.findIndex(event => event.id === eventId);
+    const eventIndex = global.events.findIndex(event => event.id === eventId);
     
     if (eventIndex !== -1) {
-        events.splice(eventIndex, 1);
+        global.events.splice(eventIndex, 1);
         res.json({ message: 'Event deleted' });
     } else {
         res.status(404).json({ error: 'Event not found' });

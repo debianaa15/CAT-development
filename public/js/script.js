@@ -1,3 +1,46 @@
+// Dropdown menu logic for menu button
+document.addEventListener('DOMContentLoaded', function() {
+  const menuBtn = document.getElementById('menuBtn');
+  const menuDropdown = document.getElementById('menuDropdown');
+
+  if (menuBtn && menuDropdown) {
+    menuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!menuDropdown.contains(e.target) && e.target !== menuBtn) {
+        menuDropdown.style.display = 'none';
+      }
+    });
+  }
+
+  // Fur Adoption button(s) click event
+  const furAdoptionBtns = document.querySelectorAll('#furAdoptionBtn');
+  furAdoptionBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      window.location.href = '/furadoption';
+    });
+  });
+  
+  // Dashboard button(s) click event
+  const dashboardBtns = document.querySelectorAll('#dashboardBtn');
+  dashboardBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      window.location.href = '/index';
+    });
+  });
+});
+// Sign out logic
+document.addEventListener('DOMContentLoaded', function() {
+  const signOut = document.getElementById('signOut');
+  if (signOut) {
+    signOut.addEventListener('click', function() {
+      window.location.href = '/';
+    });
+  }
+});
 // Modern Scheduler JavaScript
 class ModernScheduler {
     constructor() {
@@ -327,7 +370,7 @@ class ModernScheduler {
         const today = new Date();
         const currentWeek = this.getWeekStart(today);
         const weekParam = currentWeek.toISOString().split('T')[0];
-        window.location.href = `/?week=${weekParam}`;
+        window.location.href = `/index?week=${weekParam}`;
     }
 
     navigateWeek(direction) {
@@ -338,7 +381,7 @@ class ModernScheduler {
         newWeek.setDate(currentWeek.getDate() + (direction * 7));
         
         const weekParam = newWeek.toISOString().split('T')[0];
-        window.location.href = `/?week=${weekParam}`;
+        window.location.href = `/index?week=${weekParam}`;
     }
 
     getWeekStart(date) {
@@ -571,4 +614,19 @@ class ModernScheduler {
 // Initialize the scheduler when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new ModernScheduler();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const profileSettings = document.getElementById('profileSettings');
+  if (profileSettings) {
+    profileSettings.addEventListener('click', function() {
+      window.location.href = '/myprofile';
+    });
+  }
+  const aboutPusa = document.getElementById('aboutPusa');
+  if (aboutPusa) {
+    aboutPusa.addEventListener('click', function() {
+      window.location.href = '/about';
+    });
+  }
 });

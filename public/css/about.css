@@ -1,0 +1,186 @@
+/* about.css for About PUSA page */
+
+.about-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 52px;
+  margin-bottom: 32px;
+  margin-left: 4rem;
+}
+
+.about-menuback {
+  border-radius: 25px;
+  border: 1.5px solid #02522E;
+  display: flex;
+  width: 40px;
+  height: 39px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.about-title {
+  font-size: 2rem;
+  color: #02522E;
+  font-weight: 700;
+}
+
+.about-main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.about-who {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin-left: 4rem;
+  margin-right: 5rem;
+}
+
+.about-cat-img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(2,82,46,0.08);
+}
+
+.about-who-text {
+  flex: 1;
+}
+
+.about-who-text h2 {
+  color: #02522E;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.about-who-text p {
+  color: #02522E;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.about-info-cards {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.about-card {
+  background: #EBF2E5;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(2,82,46,0.08);
+  padding: 32px 24px;
+  width: 586px;
+  max-width: 100%;
+  height: 389px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.about-card h3 {
+  color: #02522E;
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.about-social-list,
+.about-donation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  
+}
+
+.about-social-list li,
+.about-donation-list li {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  font-size: 1rem;
+  margin-top: 20px;
+  margin-bottom: 16px;
+  transition: background 0.2s, box-shadow 0.2s;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+
+.about-social-list img
+ {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.about-social-list li span,
+.about-social-list li a {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 32px;
+}
+.about-social-list li:hover {
+  background: #e3f2e5;
+  box-shadow: 0 2px 8px rgba(2,82,46,0.08);
+}
+
+
+.about-donation-list img{
+    width: 80px;
+  height: 32px;
+}
+
+.about-donation-note {
+  font-size: 0.95rem;
+  color: #02522E;
+  opacity: 0.7;
+}
+
+.about-social-list li a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s, background 0.2s;
+}
+
+
+
+@media (max-width: 900px) {
+  .about-main {
+    gap: 24px;
+  }
+  .about-info-cards {
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+  .about-card {
+    min-width: unset;
+    width: 95vw;
+    max-width: 420px;
+    height: auto;
+    margin-bottom: 16px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .about-who {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .about-cat-img {
+    width: 100%;
+    height: 160px;
+  }
+}

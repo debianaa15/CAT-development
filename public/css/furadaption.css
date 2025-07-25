@@ -1,0 +1,189 @@
+.adoption-cat-b2{
+     position: absolute;
+  left: 1.9rem;
+  bottom: 20rem;
+  width: 100px;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
+}
+
+.adoption-cat-b3{
+     position: absolute;
+  right: 1.9rem;
+  bottom: 13rem;
+  width: 100px;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
+}
+
+.adoption-cat-b4{
+position: absolute;
+  left: 1rem;
+  bottom: -5rem;
+  width: 134px;
+height: 152px;
+flex-shrink: 0;
+aspect-ratio: 67/76;
+}
+
+.adoption-cat-b5{
+position: absolute;
+  right: 1rem;
+  top: 24rem;
+  width: 122px;
+height: 137px;
+flex-shrink: 0;
+aspect-ratio: 67/76;
+}
+
+.adoption-cat-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+}
+.adoption-cat-badge {
+  width: 118px;
+  height: 80px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.adoption-cat-cards-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.adoption-cat-card {
+  width: 357px;
+  height: auto;
+  flex-shrink: 0;
+  border-radius: 15px;
+  border: 0.75px solid #EBEBEB;
+  background: var(--White, #FFF);
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.10), 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  padding-bottom: 1.2rem;
+}
+.adoption-cat-img {
+  width: 333px;
+  height: 199px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: lightgray 50% / cover no-repeat;
+  object-fit: cover;
+}
+.adoption-cat-content {
+  width: 90%;
+  margin-top: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.adoption-cat-name {
+  color: #02522E;
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.7rem;
+  width: 100%;
+  text-align: left;
+}
+.adoption-cat-desc {
+  color: #02522E;
+  font-size: 1rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+  width: 100%;
+}
+.adoption-cat-btn {
+  width: 90%;
+  padding: 0.9rem 0;
+  background: #117A3A;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.adoption-cat-btn:hover {
+  background: #02522E;
+}
+/* Adoption Process Card Styles */
+.adoption-process-card {
+    margin: 2rem;
+    width: auto;
+    height: auto;
+    background: #F7F6F4;
+    border-radius: 15px;
+    border: 1px solid #E3E1DD;
+    box-shadow: 0 2px 4px -2px rgba(0,0,0,0.08);
+    padding: 1.5rem 2rem 1.2rem 2rem;
+    color: #6B6B6B;
+    font-family: inherit;
+}
+.adoption-process-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #6B6B6B;
+  margin-bottom: 0.7rem;
+}
+.adoption-process-desc {
+  font-size: 1rem;
+  color: #6B6B6B;
+  margin-bottom: 1.2rem;
+}
+.adoption-process-note {
+  display: flex;
+  align-items: center;
+  font-size: 0.98rem;
+  color: #6B6B6B;
+  background: none;
+  margin-top: 0.5rem;
+  margin-left: 2px;
+  gap: 0.5rem;
+}
+.adoption-process-icon {
+ width: 20px;
+height: 20px;
+flex-shrink: 0;
+aspect-ratio: 1/1;
+
+}
+.about-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 52px;
+  margin-bottom: 32px;
+  margin-left: 4rem;
+}
+
+.about-menuback {
+  border-radius: 25px;
+  border: 1.5px solid #02522E;
+  display: flex;
+  width: 40px;
+  height: 39px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.about-title {
+  font-size: 2rem;
+  color: #02522E;
+  font-weight: 600;
+}

@@ -1,0 +1,101 @@
+/* FOR SIGNIN TAB */
+.signin-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+}
+.signin-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 20px 25px -5px rgba(0,0,0,0.10);
+    outline: 0.75px #EBEBEB solid;
+    outline-offset: -0.75px;
+    padding: 40px 32px 32px 32px;
+    width: 677px;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.signin-container {
+    width: 100%;
+    position: relative;
+}
+.signin-image {
+    width: 180px;
+    height: 160px;
+    display: block;
+    margin: 0 auto 8px auto;
+}
+.signin-title {
+    text-align: center;
+    color: #02522E;
+    font-size: 32px;
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+.signin-fields {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.signin-label {
+    color: #02522E;
+    font-size: 18px;
+    font-family: Inter, sans-serif;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.signin-input {
+    width: 100%;
+    height: 48px;
+    background: #FBFBFB;
+    border-radius: 8px;
+    border: 1px #CDCDCD solid;
+    padding-left: 20px;
+    font-size: 16px;
+    color: #333;
+    font-family: Inter, sans-serif;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+.signin-button {
+    width: 100%;
+    height: 48px;
+    background: #016C3C;
+    border-radius: 25px;
+    color: white;
+    font-size: 18px;
+    font-family: Inter, sans-serif;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 16px;
+    margin-top: 8px;
+}
+.signin-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: rgba(2, 82, 46, 0.70);
+    font-size: 15px;
+    font-family: Poppins, sans-serif;
+    font-weight: 400;
+    margin-top: 8px;
+}
+.signin-signup-link {
+    color: rgba(2, 82, 46, 0.70);
+    font-size: 15px;
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    text-decoration: underline;
+     margin-bottom: 10px;
+    margin-top: 10px;
+}

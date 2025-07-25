@@ -1,3 +1,38 @@
+/* --- About Section Styles --- */
+/* Dropdown menu styles */
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-menu {
+    background: white;
+    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.10);
+    border-radius: 8px;
+    outline: 0.75px #EBEBEB solid;
+    outline-offset: -0.75px;
+    overflow: hidden;
+    padding: 8px 0;
+}
+.dropdown-item {
+    width: 153px;
+    height: 31px;
+    margin: 8px;
+    border-radius: 5px;
+    position: relative;
+    color: #02522E;
+    font-size: 12px;
+    font-family: Inter, sans-serif;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.dropdown-item:hover {
+    background: #F0F0F0;
+}
+
 /* Desktop navigation group for top header */
 .desktop-nav-group {
     display: flex;
@@ -230,9 +265,9 @@ body {
 /* Today button */
 #todayBtn {
     position: absolute;
-    left: 94rem;
+    right: 16.5%;
     top: 18px;
-    width: auto;
+    width: 7rem;
     min-width: 60px;
     background: transparent;
     border: none;
@@ -240,6 +275,14 @@ body {
     font-size: 15px;
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
+}
+#todayBtn:hover {
+    background: #EAEAEA;
+    color: var(--primary-color);
+    box-shadow: none;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+    width: 7rem;
 }
 
 /* Responsive navigation buttons */
@@ -253,7 +296,7 @@ body {
         top: 15px;
     }
     #todayBtn {
-        left: 100rem;
+        left: 16.5%;
         top: 15px;
         min-width: 50px;
         font-size: 14px;
@@ -872,20 +915,50 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1800px) {
+    .week-calendar {
+        width: calc(100% - 80px);
+        left: 40px;
+    }
+    #prevWeek {
+        left: 80rem;
+    }
+    #nextWeek {
+        left: 90rem;
+    }
+    #todayBtn {
+        left: 85rem;
+        top: 15px;
+        min-width: 50px;
+        font-size: 14px;
+    }
+}
+@media (max-width: 1600px) {
+    .week-calendar {
+        width: calc(100% - 60px);
+        left: 30px;
+    }
+    #prevWeek {
+        left: 75rem;
+    }
+    #nextWeek {
+        left: 82rem;
+    }
+    #todayBtn {
+        left: 78rem;
+    }
+}
 @media (max-width: 1400px) {
     .week-calendar {
         width: calc(100% - 40px);
         left: 20px;
     }
-    
     #prevWeek {
         left: 68rem;
     }
-    
     #nextWeek {
         left: 75rem;
     }
-    
     #todayBtn {
         left: 71rem;
         top: 15px;

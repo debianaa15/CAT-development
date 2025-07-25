@@ -1,0 +1,142 @@
+/* signupstyle.css */
+.signup-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+}
+.signup-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 20px 25px -5px rgba(0,0,0,0.10);
+    outline: 0.75px #EBEBEB solid;
+    outline-offset: -0.75px;
+    padding: 40px 32px 32px 32px;
+    width: 480px;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.signup-title {
+    text-align: center;
+    color: #02522E;
+    font-size: 30px;
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+.signup-fields {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.signup-row {
+    display: flex;
+    gap: 16px;
+}
+.signup-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.signup-label {
+    color: #02522E;
+    font-size: 18px;
+    font-family: Inter, sans-serif;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.signup-input {
+    width: 100%;
+    height: 48px;
+    background: #FBFBFB;
+    border-radius: 8px;
+    border: 1px #CDCDCD solid;
+    padding-left: 20px;
+    font-size: 16px;
+    color: #333;
+    font-family: Inter, sans-serif;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+.signup-role-options {
+    display: flex;
+    gap: 24px;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #A3A3A3;
+    font-family: Inter, sans-serif;
+}
+.signup-radio {
+    width: 24px;
+    height: 24px;
+    background: #FBFBFB;
+    border-radius: 9999px;
+    border: 1px #CDCDCD solid;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+    position: relative;
+    transition: background 0.2s;
+}
+.signup-role-options input[type="radio"] {
+    display: none;
+}
+.signup-role-options label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.signup-role-options input[type="radio"]:checked + .signup-radio {
+    background: #02522E;
+    border: 1px #CDCDCD solid;
+}
+.signup-role-options input[type="radio"]:checked + .signup-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 9999px;
+}
+.signup-button {
+    width: 100%;
+    height: 48px;
+    background: #016C3C;
+    border-radius: 25px;
+    color: white;
+    font-size: 18px;
+    font-family: Inter, sans-serif;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 16px;
+    margin-top: 8px;
+}
+.signup-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: rgba(2, 82, 46, 0.70);
+    font-size: 15px;
+    font-family: Poppins, sans-serif;
+    font-weight: 400;
+    margin-top: 8px;
+}
+.signup-signin-link {
+    color: rgba(2, 82, 46, 0.70);
+    font-size: 15px;
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    text-decoration: underline;
+    margin-left: 8px;
+}

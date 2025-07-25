@@ -1,0 +1,80 @@
+<link rel="stylesheet" href="/css/myprofile.css">
+<!-- Responsive Top Header -->
+<div class="top-header" style="position: relative; align-items: center; min-height: 60px;">
+  <!-- Logo at the absolute top-left corner -->
+  <div class="logo-section">
+    <img src="/img/pusa.png" alt="DLSU PUSA" class="logo">
+  </div>
+  <!-- Desktop buttons remain in their original position -->
+  <div class="desktop-nav-group">
+    <button class="icon-circle desktop-only" id="dashboardBtn" aria-label="Dashboard">
+      <img src="/img/dashboard.png" alt="Dashboard" class="circle-icon">
+    </button>
+    <button class="btn-outline desktop-only" id="furAdoptionBtn">Fur Adoption</button>
+    <div class="dropdown-container">
+      <button class="icon-circle desktop-only" id="menuBtn" aria-label="Menu">
+        <img src="/img/menu.png" alt="Menu" class="menu-icon">
+      </button>
+      <div class="dropdown-menu" id="menuDropdown" style="display: none; width: 180px; position: absolute; right: 0; top: 50px; z-index: 100;">
+        <div class="dropdown-item" id="profileSettings">Profile Settings</div>
+        <div class="dropdown-item" id="aboutPusa">About PUSA</div>
+        <div class="dropdown-item" id="signOut">Sign Out</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="about-header">
+  <a href="/main" class="about-menuback-btn" aria-label="Back to Home">
+    <img src="/img/menuback.png" alt="Menu Back" class="about-menuback" />
+  </a>
+  <h1 class="about-title">My Profile</h1>
+</div>
+<main class="profile-main">
+  <section class="profile-info-section">
+    <img src="/img/cat2.png" alt="Profile Cat" class="profile-info-cat-left" />
+    <div class="profile-info-card">
+      <h2>Profile Information</h2>
+      <p><strong>Full Name:</strong> John Doe</p>
+      <p><strong>Email:</strong> johndoe@dlsu.edu.ph</p>
+      <p><strong>ID Number:</strong> 12345678</p>
+      <p><strong>Role:</strong> Volunteer</p>
+      <p><strong>Password:</strong> <span class="profile-password">••••••••••••••••</span></p>
+    </div>
+    <div class="profile-quota-card">
+         <img src="/img/cat3.png" alt="Profile Cat" class="profile-info-cat-right" />
+      <h2>Quota Tracker <span class="profile-term">S.Y 2024 - 2025 Term 3</span></h2>
+      <div class="quota-bar-group">
+        <div class="quota-label">Feeding</div>
+        <div class="quota-bar">
+          <span class="quota-bar-rect rect1"></span>
+          <span class="quota-bar-rect rect2"></span>
+          <span class="quota-bar-rect rect3"></span>
+          <span class="quota-bar-rect rect4"></span>
+          <span class="quota-bar-rect rect5"></span>
+        </div>
+        <div class="quota-count">5/5</div>
+      </div>
+      <div class="quota-bar-group">
+          <div class="quota-label">Nook</div>
+          <div class="quota-bar">
+            <span class="quota-bar-rect rect1"></span>
+            <span class="quota-bar-rect rect2"></span>
+            <span class="quota-bar-rect rect3"></span>
+            <span class="quota-bar-rect rect-empty"></span>
+            <span class="quota-bar-rect rect-empty"></span>
+          </div>
+          <div class="quota-count">3/5</div>
+        </div>
+    </div>
+  </section>
+  <section class="profile-schedule-section">
+    <div class="profile-schedule-card">
+      <h2>Scheduled Duties <span class="profile-week">Week 10</span></h2>
+      <div class="profile-duty-list">
+        <div class="profile-duty-item feeding">July 18, 2PM <span class="duty-type">Feeding</span></div>
+        <div class="profile-duty-item nook">July 18, 2PM <span class="duty-type">Nook</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="/js/script.js"></script>
