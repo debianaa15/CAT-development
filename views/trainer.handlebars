@@ -1,0 +1,423 @@
+
+<div class="top-header" style="position: relative; align-items: center; min-height: 60px;">
+  <!-- Logo at the absolute top-left corner -->
+  <div class="logo-section">
+    <img src="/img/pusa.png" alt="DLSU PUSA" class="logo">
+  </div>
+  <!-- Desktop buttons remain in their original position -->
+<div class="desktop-nav-group">
+    <button class="icon-circle desktop-only" id="dashboardBtn" aria-label="Dashboard">
+      <img src="/img/dashboard.png" alt="Dashboard" class="circle-icon">
+    </button>
+    <button class="btn-outline desktop-only" id="furAdoptionBtn">Fur Adoption</button>
+    <div class="dropdown-container">
+      <button class="icon-circle desktop-only" id="menuBtn" aria-label="Menu">
+        <img src="/img/menu.png" alt="Menu" class="menu-icon">
+      </button>
+      <div class="dropdown-menu" id="menuDropdown" style="display: none; width: 180px; position: absolute; right: 0; top: 50px; z-index: 100;">
+        <div class="dropdown-item" id="profileSettings">Profile Settings</div>
+        <div class="dropdown-item" id="aboutPusa">About PUSA</div>
+        <div class="dropdown-item" id="signOut">Sign Out</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="calendar-nav-group">
+  <button class="nav-btn" id="prevWeek" type="button">
+    <img src="/img/back.png" alt="Previous Week" class="nav-icon">
+  </button>
+  <button class="btn" id="todayBtn" type="button">Today</button>
+  <button class="nav-btn" id="nextWeek" type="button">
+    <img src="/img/back.png" alt="Next Week" class="nav-icon nav-icon-flip">
+  </button>
+        </div>
+
+<div class="scheduler-container">
+    
+    
+        
+    </div>
+    <div class="week-calendar">
+        <div class="week-header">
+            <div class="time-gutter"></div>
+            {{#each weekDays}}
+            <div class="day-header {{#if isToday}}today{{/if}}">
+                {{#if isToday}}
+                  <div class="today-rect"></div>
+                {{/if}}
+                <div class="day-name">{{dayName}}</div>
+                <div class="day-number">{{day}}</div>
+                {{#if isToday}}<div class="today-indicator"></div>{{/if}}
+            </div>
+            {{/each}}
+        </div>
+        <div class="time-grid">
+            <div class="time-column">
+                {{#each timeSlots}}
+                <div class="time-slot">
+                    <span class="time-label">{{this}}</span>
+                </div>
+                {{/each}}
+            </div>
+            <div class="week-grid">
+                {{#each weekDays}}
+                <div class="day-column" data-date="{{dateString}}">
+                    {{#each ../timeSlots}}
+                    <div class="time-cell" data-time="{{this}}">
+                        <div class="grid-line"></div>
+                    </div>
+                    {{/each}}
+                    {{#each events}}
+                    
+                    {{/each}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        <div class="slot-cards-section">
+            {{#each weekDays}}
+                <div class="day-slot-cards horizontal-slot-cards" data-day="{{dayName}}">
+                    {{#unless (eq dayName "SUN")}}
+                    <div class="slot-cards-flex-row">
+                      <!-- Only one Nook card per day, status is dynamic -->
+                      <div class="slot-card nook-card">
+                        <div class="slot-card-header nook-header">
+                          Nook
+                          <span class="slot-card-time">2:00 - 3:00 PM</span>
+                        </div>
+                        <div class="nook-card-body">
+                          <div class="nook-card-status-label" data-day="{{dayName}}" style="color:#2dbe60; font-weight:600; font-size:14px; margin-bottom:6px; text-align:center;">Available to Assign</div>
+                          <div class="nook-card-status-row">
+                            <span class="nook-card-status-dot" data-day="{{dayName}}" style="background:#2dbe60;"></span>
+                  
+                          </div>
+                          <div class="slot-card-view">
+                            <div class="slot-card-assign-nook-btn" data-day="{{dayName}}" onclick="openNookSlotModal(event)" style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                              <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to assign yourself
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="slot-card feeding-card">
+                        <div class="slot-card-header feeding-header">
+                          Feeding
+                          <span class="slot-card-time">4:00 - 6:00 PM</span>
+                        </div>
+                        <div class="slot-card-body slot-card-body-row">
+                          <span class="slot-card-status available" data-day="{{dayName}}"></span>
+                          <span class="slot-card-full" data-day="{{dayName}}">Available to Assign</span>
+                        </div>
+                        <div class="slot-card-flexfill"></div>
+                        <div class="slot-card-view">
+                          <div class="slot-card-assign-feed-btn" data-day="{{dayName}}" onclick="openFeedingSlotModal(event)" style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                            <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to assign yourself
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {{/unless}}
+                    {{#if isToday}}
+                      {{#if (eq dayName "SUN")}}
+                        <div class="signup-message">Sign-Ups open today!</div>
+                      {{/if}}
+                    {{else}}
+                      {{#if (eq dayName "SUN")}}
+                        <div class="signup-message">Sign-Ups is open only on Sunday!</div>
+                      {{/if}}
+                    {{/if}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+<!-- Feeding Slot Modal -->
+<div id="feedingSlotModal" class="modal" style="display: none;">
+  <div class="modal-overlay"></div>
+  <div class="feeding-modal-center">
+    <div class="feeding-modal-card">
+      <span class="close" onclick="closeFeedingModal()">&times;</span>
+      <div class="feeding-modal-header">
+        <div class="feeding-modal-title">Feeding</div>
+        <div class="feeding-modal-time">4:00 - 6:00 PM</div>
+      </div>
+      <div id="feedingModalContent">
+        <div class="feeding-modal-question">Who will do this slot?</div>
+        <div class="feeding-modal-radio-group">
+          <label class="feeding-modal-radio">
+            <input type="radio" name="feedingSlotType" value="justYou" checked>
+            <span class="feeding-modal-radio-label">Just You</span>
+          </label>
+          <label class="feeding-modal-radio">
+            <input type="radio" name="feedingSlotType" value="allowVolunteers">
+            <span class="feeding-modal-radio-label">Allow Volunteers to Join</span>
+          </label>
+        </div>
+        <button class="feeding-modal-action-btn" onclick="takeSlot()">Take this Slot</button>
+      </div>
+      <div id="feedingModalClaimedContent" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:1.2em;font-weight:700;color:#2d3a4b;">John Doe</span>
+          <span style="color:#2dbe60;font-weight:600;display:flex;align-items:center;gap:6px;"><span style="background:#ffd600;border-radius:50%;width:16px;height:16px;display:inline-block;margin-right:4px;"></span>You own this slot</span>
+        </div>
+        <div style="color:#6c7a89;font-size:1em;margin-bottom:6px;"><span style="font-size:1.2em;vertical-align:middle;margin-right:6px;">&#128100;</span>You claimed this slot</div>
+        <div style="color:#a0a0a0;font-size:1em;margin-bottom:16px;">Already marked as <b>Trainer-Only</b></div>
+        <button class="feeding-modal-action-btn" style="background:#d32f2f;" onclick="cancelFeedingSlot()">Cancel Slot</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Nook Slot Modal -->
+<div id="nookSlotModal" class="modal" style="display: none;">
+  <div class="modal-overlay"></div>
+  <div class="feeding-modal-center">
+    <div class="feeding-modal-card" id="nookModalCard">
+      <span class="close" onclick="closeNookModal()">&times;</span>
+      <div class="feeding-modal-header">
+        <div class="feeding-modal-title">Nook</div>
+        <div class="feeding-modal-time">2:00 - 3:00 PM</div>
+      </div>
+      <div id="nookModalContent">
+        <div class="feeding-modal-question">Who will do this slot?</div>
+        <div class="feeding-modal-radio-group">
+          <label class="feeding-modal-radio">
+            <input type="radio" name="nookSlotType" value="justYou" checked>
+            <span class="feeding-modal-radio-label">Just You</span>
+          </label>
+          <label class="feeding-modal-radio">
+            <input type="radio" name="nookSlotType" value="allowVolunteers">
+            <span class="feeding-modal-radio-label">Allow Volunteers to Join</span>
+          </label>
+        </div>
+        <button class="feeding-modal-action-btn" id="nookModalAssignBtn" onclick="takeNookSlot()">Take this Slot</button>
+      </div>
+      <div id="nookModalClaimedContent" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:1.2em;font-weight:700;color:#2d3a4b;">John Doe</span>
+          <span style="color:#2dbe60;font-weight:600;display:flex;align-items:center;gap:6px;"><span style="background:#ffd600;border-radius:50%;width:16px;height:16px;display:inline-block;margin-right:4px;"></span>You own this slot</span>
+        </div>
+        <div style="color:#6c7a89;font-size:1em;margin-bottom:6px;"><span style="font-size:1.2em;vertical-align:middle;margin-right:6px;">&#128100;</span>You claimed this slot</div>
+        <div style="color:#a0a0a0;font-size:1em;margin-bottom:16px;">Already marked as <b>Trainer-Only</b></div>
+        <button class="feeding-modal-action-btn" style="background:#d32f2f;" onclick="cancelNookSlot()">Cancel Slot</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Week navigation logic to always use /trainer?week=...
+function getCurrentWeekParam() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('week');
+}
+
+document.getElementById('nextWeek').addEventListener('click', function(e) {
+  e.preventDefault();
+  // Calculate next week (example logic, adjust as needed)
+  let currentWeek = getCurrentWeekParam();
+  let nextWeek = getNextWeek(currentWeek);
+  window.location.href = '/trainer?week=' + nextWeek;
+});
+
+document.getElementById('prevWeek').addEventListener('click', function(e) {
+  e.preventDefault();
+  // Calculate previous week (example logic, adjust as needed)
+  let currentWeek = getCurrentWeekParam();
+  let prevWeek = getPrevWeek(currentWeek);
+  window.location.href = '/trainer?week=' + prevWeek;
+});
+
+function getNextWeek(weekStr) {
+  // weekStr format: YYYY-MM-DD
+  let d = weekStr ? new Date(weekStr) : new Date();
+  d.setDate(d.getDate() + 7);
+  return d.toISOString().slice(0, 10);
+}
+function getPrevWeek(weekStr) {
+  let d = weekStr ? new Date(weekStr) : new Date();
+  d.setDate(d.getDate() - 7);
+  return d.toISOString().slice(0, 10);
+}
+// Updated script to work with your existing structure
+let nookSlotState = {};
+let currentFeedingDay = null;
+
+function openFeedingSlotModal(event) {
+  var modal = document.getElementById('feedingSlotModal');
+  var assignContent = document.getElementById('feedingModalContent');
+  var claimedContent = document.getElementById('feedingModalClaimedContent');
+  if (event && event.currentTarget) {
+    currentFeedingDay = event.currentTarget.getAttribute('data-day');
+    currentNookDay = null;
+  }
+  if (modal) {
+    modal.style.display = 'flex';
+    // Show correct modal content
+    if (window.feedingSlotState && window.feedingSlotState[currentFeedingDay]) {
+      assignContent.style.display = 'none';
+      claimedContent.style.display = 'block';
+    } else {
+      assignContent.style.display = 'block';
+      claimedContent.style.display = 'none';
+    }
+  }
+
+}
+function openNookSlotModal(event) {
+  var modal = document.getElementById('nookSlotModal');
+  var assignContent = document.getElementById('nookModalContent');
+  var claimedContent = document.getElementById('nookModalClaimedContent');
+  if (event && event.currentTarget) {
+    currentNookDay = event.currentTarget.getAttribute('data-day');
+    currentFeedingDay = null;
+  }
+  if (modal) {
+    modal.style.display = 'flex';
+    // Show correct modal content
+    if (nookSlotState[currentNookDay]) {
+      assignContent.style.display = 'none';
+      claimedContent.style.display = 'block';
+    } else {
+      assignContent.style.display = 'block';
+      claimedContent.style.display = 'none';
+    }
+  }
+}
+function takeNookSlot() {
+  var modal = document.getElementById('nookSlotModal');
+  var assignContent = document.getElementById('nookModalContent');
+  var claimedContent = document.getElementById('nookModalClaimedContent');
+  if (currentNookDay) {
+    nookSlotState[currentNookDay] = true;
+    const nookLabel = document.querySelector('.nook-card-status-label[data-day="' + currentNookDay + '"]');
+    const nookDot = document.querySelector('.nook-card-status-dot[data-day="' + currentNookDay + '"]');
+    const nookText = document.querySelector('.nook-card-status-text[data-day="' + currentNookDay + '"]');
+    if (nookLabel) {
+      nookLabel.textContent = 'You own this slot';
+      nookLabel.style.color = '#2dbe60';
+    }
+    if (nookDot) {
+      nookDot.style.background = '#ffd600';
+    }
+    if (nookText) {
+      nookText.textContent = 'You own this slot';
+      nookText.style.color = '#ffd600';
+    }
+    // Show claimed modal content
+    assignContent.style.display = 'none';
+    claimedContent.style.display = 'block';
+  }
+}
+function cancelNookSlot() {
+  var modal = document.getElementById('nookSlotModal');
+  var assignContent = document.getElementById('nookModalContent');
+  var claimedContent = document.getElementById('nookModalClaimedContent');
+  if (currentNookDay) {
+    nookSlotState[currentNookDay] = false;
+    const nookLabel = document.querySelector('.nook-card-status-label[data-day="' + currentNookDay + '"]');
+    const nookDot = document.querySelector('.nook-card-status-dot[data-day="' + currentNookDay + '"]');
+    const nookText = document.querySelector('.nook-card-status-text[data-day="' + currentNookDay + '"]');
+    if (nookLabel) {
+      nookLabel.textContent = 'Available to Assign';
+      nookLabel.style.color = '#2dbe60';
+    }
+    if (nookDot) {
+      nookDot.style.background = '#2dbe60';
+    }
+    if (nookText) {
+      nookText.textContent = 'Available to Assign';
+      nookText.style.color = '#2dbe60';
+    }
+    // Show assign modal content
+    assignContent.style.display = 'block';
+    claimedContent.style.display = 'none';
+  }
+}
+function closeNookModal() {
+  var modal = document.getElementById('nookSlotModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+
+// Function for taking the slot
+window.feedingSlotState = window.feedingSlotState || {};
+function takeSlot() {
+  const selectedOption = document.querySelector('input[name="feedingSlotType"]:checked');
+  var modal = document.getElementById('feedingSlotModal');
+  var assignContent = document.getElementById('feedingModalContent');
+  var claimedContent = document.getElementById('feedingModalClaimedContent');
+  if (selectedOption && (currentFeedingDay || currentNookDay)) {
+    if (currentFeedingDay) {
+      // Update only the clicked feeding slot status
+      window.feedingSlotState[currentFeedingDay] = true;
+      const statusText = document.querySelector('.slot-card-full[data-day="' + currentFeedingDay + '"]');
+      const statusDot = document.querySelector('.slot-card-status[data-day="' + currentFeedingDay + '"]');
+      if (statusText) {
+        statusText.textContent = 'You own this slot';
+      }
+      if (statusDot) {
+        statusDot.classList.remove('available');
+        statusDot.classList.add('full');
+        statusDot.style.background = '#2dbe60'; // green
+      }
+      // Show claimed modal content
+      assignContent.style.display = 'none';
+      claimedContent.style.display = 'block';
+    } else if (currentNookDay) {
+      // Update only the clicked nook slot status
+      const nookLabel = document.querySelector('.nook-card-status-label[data-day="' + currentNookDay + '"]');
+      const nookDot = document.querySelector('.nook-card-status-dot[data-day="' + currentNookDay + '"]');
+      const nookText = document.querySelector('.nook-card-status-text[data-day="' + currentNookDay + '"]');
+      if (nookLabel) {
+        nookLabel.textContent = 'You own this slot';
+        nookLabel.style.color = '#2dbe60';
+      }
+      if (nookDot) {
+        nookDot.style.background = '#2dbe60';
+      }
+      if (nookText) {
+        nookText.textContent = 'You own this slot';
+        nookText.style.color = '#2dbe60';
+      }
+    }
+    // Optional: Show success message or update UI
+    alert('Slot booked successfully!');
+  }
+}
+
+function cancelFeedingSlot() {
+  var modal = document.getElementById('feedingSlotModal');
+  var assignContent = document.getElementById('feedingModalContent');
+  var claimedContent = document.getElementById('feedingModalClaimedContent');
+  if (currentFeedingDay) {
+    window.feedingSlotState[currentFeedingDay] = false;
+    const statusText = document.querySelector('.slot-card-full[data-day="' + currentFeedingDay + '"]');
+    const statusDot = document.querySelector('.slot-card-status[data-day="' + currentFeedingDay + '"]');
+    if (statusText) {
+      statusText.textContent = 'Available to Assign';
+    }
+    if (statusDot) {
+      statusDot.classList.remove('full');
+      statusDot.classList.add('available');
+      statusDot.style.background = '';
+    }
+    // Show assign modal content
+    assignContent.style.display = 'block';
+    claimedContent.style.display = 'none';
+  }
+}
+
+
+function closeFeedingModal() {
+  const modal = document.getElementById('feedingSlotModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+</script>
+
+<script src="/js/script.js"></script>
+

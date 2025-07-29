@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="/css/signinstyle.css">
+<script src="/js/signin.js"></script>
+<div class="signin-bg">
+  <div class="signin-card">
+    <form class="signin-form" id="loginForm" method="POST" action="/login">
+      <img class="signin-image" src="/img/pusa.png" alt="Sign In Image" />
+      <div class="signin-title">Sign In</div>
+      <div class="signin-fields">
+        <label class="signin-label" for="email">Email</label>
+        <input class="signin-input" type="email" id="email" name="email" placeholder="Enter your email" required />
+        <label class="signin-label" for="password">Password</label>
+        <input class="signin-input" type="password" id="password" name="password" placeholder="Enter your password" required />
+      </div>
+      <button class="signin-button" type="submit">Sign In</button>
+      <div class="signin-footer">
+        <span>Don't have an account yet?</span>
+        <a class="signin-signup-link" href="/signup">Sign up here!</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const data = {
+        email: form.email.value,
+        password: form.password.value
+    };
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert('Login successful!');
+            if (result.role === 'Trainer') {
+                window.location.href = '/trainer';
+            } else {
+                window.location.href = '/main';
+            }
+        } else {
+            alert(result.message || 'Login failed');
+        }
+
+    } catch (err) {
+        console.error('Login error:', err);
+        alert('An error occurred during login. Please try again.');
+    }
+});
+</script>

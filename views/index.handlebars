@@ -5,7 +5,7 @@
     <img src="/img/pusa.png" alt="DLSU PUSA" class="logo">
   </div>
   <!-- Desktop buttons remain in their original position -->
-<div class="desktop-nav-group">
+  <div class="desktop-nav-group">
     <button class="icon-circle desktop-only" id="dashboardBtn" aria-label="Dashboard">
       <img src="/img/dashboard.png" alt="Dashboard" class="circle-icon">
     </button>
@@ -31,63 +31,227 @@
   <button class="nav-btn" id="nextWeek" type="button">
     <img src="/img/back.png" alt="Next Week" class="nav-icon nav-icon-flip">
   </button>
-        </div>
+</div>
 
 <div class="scheduler-container">
-    
-    <div class="date-header">
-        <div class="date-nav">
-            <h1 class="current-date">{{currentMonth}}</h1>
-        </div>
-        
+  <div class="week-calendar">
+    <div class="week-header">
+      <div class="time-gutter"></div>
+      {{#each weekDays}}
+      <div class="day-header {{#if isToday}}today{{/if}}">
+        {{#if isToday}}
+          <div class="today-rect"></div>
+        {{/if}}
+        <div class="day-name">{{dayName}}</div>
+        <div class="day-number">{{day}}</div>
+        {{#if isToday}}<div class="today-indicator"></div>{{/if}}
+      </div>
+      {{/each}}
     </div>
-    <div class="week-calendar">
-        <div class="week-header">
-            <div class="time-gutter"></div>
-            {{#each weekDays}}
-            <div class="day-header {{#if isToday}}today{{/if}}">
-                {{#if isToday}}
-                  <div class="today-rect"></div>
-                  <div class="day-name" style="color: #A0BA1C;">{{dayName}}</div>
-                  <div class="day-number" style="color: #A0BA1C;">{{day}}</div>
-                  <div class="today-indicator"></div>
-                {{else}}
-                  <div class="day-name">{{dayName}}</div>
-                  <div class="day-number">{{day}}</div>
-                {{/if}}
-            </div>
-            {{/each}}
+    <div class="time-grid">
+      <div class="time-column">
+        {{#each timeSlots}}
+        <div class="time-slot">
+          <span class="time-label">{{this}}</span>
         </div>
-        <div class="time-grid">
-            <div class="time-column">
-                {{#each timeSlots}}
-                <div class="time-slot">
-                    <span class="time-label">{{this}}</span>
-                </div>
-                {{/each}}
-            </div>
-            <div class="week-grid">
-                {{#each weekDays}}
-                <div class="day-column" data-date="{{dateString}}">
-                    {{#each ../timeSlots}}
-                    <div class="time-cell" data-time="{{this}}">
-                        <div class="grid-line"></div>
-                    </div>
-                    {{/each}}
-                    {{#each events}}
-                    
-                    {{/each}}
-                </div>
-                {{/each}}
-            </div>
+        {{/each}}
+      </div>
+      <div class="week-grid">
+        {{#each weekDays}}
+        <div class="day-column" data-date="{{dateString}}">
+          {{#each ../timeSlots}}
+          <div class="time-cell" data-time="{{this}}">
+            <div class="grid-line"></div>
+          </div>
+          {{/each}}
+          {{#each events}}
+          {{/each}}
         </div>
+        {{/each}}
+      </div>
     </div>
+    <div class="slot-cards-section">
+      {{#each weekDays}}
+        <div class="day-slot-cards" data-day="{{dayName}}">
+          {{#unless (eq dayName "SUN")}}
+          <div class="slot-card nook-card">
+            <div class="slot-card-header nook-header">
+              Nook
+              <span class="slot-card-time">2:00 - 3:00 PM</span>
+            </div>
+            <div class="slot-card-body slot-card-body-column">
+              <span class="slot-card-trainer">Trainer-only</span>
+              <span class="slot-card-volunteer">Not open to volunteers</span>
+            </div>
+            <div class="slot-card-flexfill"></div>
+            <div class="slot-card-view">
+              <img class="mouse-icon1" src="/img/mouse1.png" alt="Mouse icon" />Click to view
+            </div>
+          </div>
+          <div class="slot-card feeding-card">
+            <div class="slot-card-header feeding-header">
+              Feeding
+              <span class="slot-card-time">4:00 - 6:00 PM</span>
+            </div>
+            <div class="slot-card-body slot-card-body-row">
+              <span class="slot-card-status full"></span>
+              <span class="slot-card-full">Full</span>
+              <span class="slot-card-reserved">5/5 reserved</span>
+            </div>
+            <div class="slot-card-flexfill"></div>
+            <div class="slot-card-view">
+              <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to view
+            </div>
+          </div>
+          {{/unless}}
+          {{#if isToday}}
+            {{#if (eq dayName "SUN")}}
+              <div class="signup-message">Sign-Ups open today!</div>
+            {{/if}}
+          {{else}}
+            {{#if (eq dayName "SUN")}}
+              <div class="signup-message">Sign-Ups is open only on Sunday!</div>
+            {{/if}}
+          {{/if}}
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
 
- 
+<!-- Slot Details Modal -->
+<div id="slotModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <div id="modalBody"></div>
+  </div>
+</div>
 
-
-
-
+<!-- Link to external CSS for modal styles -->
+<link rel="stylesheet" href="/css/modal-slot-card.css">
 
 <script src="/js/script.js"></script>
+<script>
+// Modal logic
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('slotModal');
+  const closeModal = document.getElementById('closeModal');
+  const modalBody = document.getElementById('modalBody');
 
+  document.querySelectorAll('.slot-card-view').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Get slot card details
+      const slotCard = btn.closest('.slot-card');
+      let slotType = 'Nook';
+      let slotTime = '2:00 - 3:00 PM';
+      
+      if (slotCard && slotCard.classList.contains('feeding-card')) {
+        // Feeding slot modal
+        modalBody.innerHTML = `
+          <div class="modal-slot-card">
+            <div class="modal-slot-header feeding-modal-header">
+              <div class="modal-slot-title">Feeding</div>
+              <div class="modal-slot-time">4:00 - 6:00 PM</div>
+            </div>
+            <div class="modal-slot-content">
+              <div class="modal-slot-row modal-slot-row-user">
+                <div class="modal-slot-user-info">
+                  <div class="modal-slot-user">John Doe</div>
+                </div>
+                <div class="modal-slot-status">
+                  <div class="modal-slot-status-dot feeding-status-dot"></div>
+                  <div class="modal-slot-status-text feeding-status-text">Full</div>
+                </div>
+              </div>
+              <div class="modal-slot-role">Trainer</div>
+              <div class="modal-slot-row modal-slot-row-volunteers">
+                <div class="modal-slot-vol-label">Listed Volunteers:</div>
+                <div class="modal-slot-vol-count feeding-vol-count">5/5 reserved</div>
+              </div>
+              <div class="modal-slot-volunteers">
+                <div class="modal-slot-vol feeding-vol">Chris Hemsworth</div>
+                <div class="modal-slot-vol feeding-vol">Scarlett Johansson</div>
+                <div class="modal-slot-vol feeding-vol">Robert Downey Jr.</div>
+                <div class="modal-slot-vol feeding-vol">Chris Evans</div>
+                <div class="modal-slot-vol feeding-vol">Jeremy Renner</div>
+              </div>
+              <div id="modalButtons" class="modal-slot-buttons">
+                <button class="modal-slot-reserved-btn feeding-full-btn">Slot Full</button>
+              </div>
+            </div>
+          </div>
+        `;
+        modal.style.display = 'flex';
+        return;
+      }
+      // Default (Nook) modal
+      modalBody.innerHTML = `
+        <div class="modal-slot-card">
+          <div class="modal-slot-header">
+            <div class="modal-slot-title">${slotType}</div>
+            <div class="modal-slot-time">${slotTime}</div>
+          </div>
+          <div class="modal-slot-content">
+            <div class="modal-slot-row modal-slot-row-user">
+              <div class="modal-slot-user-info">
+                <div class="modal-slot-user">John Doe</div>
+              </div>
+              <div class="modal-slot-status">
+                <div class="modal-slot-status-dot"></div>
+                <div class="modal-slot-status-text">Open</div>
+              </div>
+            </div>
+            <div class="modal-slot-role">Trainer</div>
+            <div class="modal-slot-row modal-slot-row-volunteers">
+              <div class="modal-slot-vol-label">Listed Volunteers:</div>
+              <div class="modal-slot-vol-count">3/5 reserved</div>
+            </div>
+            <div class="modal-slot-volunteers">
+              <div class="modal-slot-vol">Chris Hemsworth</div>
+              <div class="modal-slot-vol">Scarlett Johansson</div>
+              <div class="modal-slot-vol">Robert Downey Jr.</div>
+            </div>
+            <div id="modalButtons" class="modal-slot-buttons">
+              <button id="reserveBtn" class="modal-slot-reserve-btn">Reserve Slot</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Add event listener for Reserve Slot button
+      const reserveBtn = document.getElementById('reserveBtn');
+      if (reserveBtn) {
+        reserveBtn.addEventListener('click', function() {
+          const modalButtons = document.getElementById('modalButtons');
+          if (modalButtons) {
+            modalButtons.innerHTML = `
+              <button class="modal-slot-reserved-btn">Slot Reserved</button>
+              <button id="cancelBtn" class="modal-slot-cancel-btn">Cancel Slot</button>
+            `;
+            // Add event listener for Cancel Slot
+            const cancelBtn = document.getElementById('cancelBtn');
+            if (cancelBtn) {
+              cancelBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+              });
+            }
+          }
+        });
+      }
+
+      modal.style.display = 'flex';
+    });
+  });
+
+
+  // Close modal when clicking outside
+  window.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+});
+</script>
