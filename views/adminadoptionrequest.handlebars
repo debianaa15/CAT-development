@@ -1,0 +1,64 @@
+{{!-- filepath: c:\Users\Raphael\Documents\CAT-development-main\views\adminadoptionrequest.handlebars --}}
+<div class="admin-container">
+  <aside class="sidebar">
+    <div class="logo">
+      <img src="/img/pusa.png" alt="DLSU PUSA Logo" />
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li class="active">
+          <span class="icon"><img src="/img/requests.png" alt="Interview Icon" /></span>
+          <span>Adoption interview requests</span>
+        </li>
+        <li>
+          <span class="icon"><img src="/img/trainers.png" alt="Trainer Icon" /></span>
+          <span>Trainer Users List</span>
+        </li>
+        <li>
+          <span class="icon"><img src="/img/volunteers.png" alt="Volunteer Icon" /></span>
+          <span>Volunteer Users List</span>
+        </li>
+        <li>
+          <span class="icon"><img src="/img/cats.png" alt="Cat Icon" /></span>
+          <span>Cats Listing</span>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="main-content">
+    <section class="requests-section">
+      <h2>Adoption Interview Requests</h2>
+      <div class="search-bar">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" placeholder="Search by ID No. or Volunteer Name" />
+      </div>
+      <table class="requests-table">
+        <thead>
+          <tr>
+            <th>ID No.</th>
+            <th>Volunteer Name</th>
+            <th>Action Buttons</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>12276458</td>
+            <td>John Doe</td>
+            <td>
+              <button class="btn accept">Accept</button>
+              <button class="btn deny">Deny</button>
+            </td>
+          </tr>
+          <tr>
+            <td>12108562</td>
+            <td>Christian Tiu</td>
+            <td>
+              <button class="btn accept">Accept</button>
+              <button class="btn deny">Deny</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>
