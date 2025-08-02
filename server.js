@@ -133,8 +133,19 @@ app.get('/adminadoptionrequest', (req, res) => {
   res.render('adminadoptionrequest');
 });
 
+// Admin Trainer User List route
 app.get('/admin/trainer-users', (req, res) => {
   res.render('admintraineruserlist');
+});
+
+// Admin Volunteer User List route
+app.get('/admin/volunteer-users', (req, res) => {
+  res.render('adminvolunteeruserlist'); // Create this file next!
+});
+
+// Admin Cats List route
+app.get('/admin/cats', (req, res) => {
+  res.render('admincatslist'); // Create this file next!
 });
 
 // Helper function to generate week data
