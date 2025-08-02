@@ -11,13 +11,13 @@
             <span>Adoption interview requests</span>
           </a>
         </li>
-        <li class="active">
+        <li>
           <a href="/admin/trainer-users">
             <span class="icon"><img src="/img/trainers.png" alt="Trainer Icon" /></span>
             <span>Trainer Users List</span>
           </a>
         </li>
-        <li>
+        <li class="active">
           <a href="/admin/volunteer-users">
             <span class="icon"><img src="/img/volunteers.png" alt="Volunteer Icon" /></span>
             <span>Volunteer Users List</span>
@@ -34,18 +34,18 @@
   </aside>
   <main class="main-content">
     <section class="requests-section">
-      <h2>Trainer Users List</h2>
+      <h2>Volunteer Users List</h2>
       <div class="search-bar">
         <img src="/img/search.png" alt="Search" class="search-icon" />
-        <input type="text" placeholder="Search by ID No. or Trainer Name" />
+        <input type="text" placeholder="Search by ID No. or Volunteer Name" />
       </div>
       <table class="requests-table">
         <thead>
           <tr>
             <th>ID No.</th>
-            <th>Trainer Name</th>
-            <th>Current Role</th>
-            <th>Change Role To</th>
+            <th>Volunteer Name</th>
+            <th>Role</th>
+            <th>Change Role To Trainer?</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -55,11 +55,7 @@
             <td>John Doe</td>
             <td>Trainer</td>
             <td>
-              <select>
-                <option>Change Role</option>
-                <option>Admin</option>
-                <option>Volunteer</option>
-              </select>
+              <button class="btn accept">Change</button>
             </td>
             <td>
               <button class="btn deny">Remove</button>
@@ -70,11 +66,7 @@
             <td>Christian Tiu</td>
             <td>Trainer</td>
             <td>
-              <select>
-                <option>Change Role</option>
-                <option>Admin</option>
-                <option>Volunteer</option>
-              </select>
+              <button class="btn accept">Change</button>
             </td>
             <td>
               <button class="btn deny">Remove</button>
@@ -83,5 +75,3 @@
         </tbody>
       </table>
     </section>
-  </main>
-</div>
