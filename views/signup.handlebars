@@ -52,3 +52,42 @@
     </form>
   </div>
 </div>
+
+<script>
+document.querySelector('.signup-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const data = {
+        firstName: form.firstName.value,
+        lastName: form.lastName.value,
+        email: form.email.value,
+        idNumber: form.idNumber.value,
+        role: form.role.value,
+        password: form.password.value
+    };
+
+    try {
+        const response = await fetch('/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert('Signup successful!');
+            window.location.href = '/'; // Redirect to login page
+        } else {
+            alert(result.message || 'Signup failed');
+        }
+    } catch (error) {
+        console.error('Error during signup:', error);
+        alert('An error occurred. Please try again.');
+    }
+});
+</script>

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/cat-development', {
+mongoose.connect('mongodb://localhost:27017/DLSU_PUSA_DB', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -24,27 +24,27 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-const fs = require('fs');
-const usersFilePath = path.join(__dirname, 'database', 'users.json');
+// Import User model for MongoDB authentication
+const User = require('./models/user');
 
 
 // --- LOGIN ROUTE FOR AJAX LOGIN ---
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    // Read users from users.json (one JSON object per line)
-    const usersData = fs.readFileSync(usersFilePath, 'utf8')
-      .split('\n')
-      .filter(line => line.trim().length > 0)
-      .map(line => JSON.parse(line));
-    const user = usersData.find(u => u.email === email);
+    
+    // Find user in MongoDB
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(401).json({ message: 'Account not found.' });
     }
-    // For now, assume plain text password match
-    if (user.user_password !== password) {
+    
+    // Use bcrypt to compare password
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
       return res.status(401).json({ message: 'Incorrect password.' });
     }
+    
     // Success: return user_role for differentiation
     if (user.user_role === 'Trainer') {
       return res.json({ role: user.user_role, redirect: '/trainer' });
@@ -160,6 +160,39 @@ app.get('/', (req, res) => {
 // Route for signup page
 app.get('/signup', (req, res) => {
     res.render('signup');
+});
+
+// Handle signup form submission
+app.post('/signup', async (req, res) => {
+    const { firstName, lastName, email, idNumber, role, password } = req.body;
+
+    if (!firstName || !lastName || !email || !idNumber || !role || !password) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    try {
+        const existingUser = await User.findOne({ email: email });
+        if (existingUser) {
+            return res.status(409).json({ message: 'Email already registered' });
+        }
+
+        // Capitalize role to match enum in model (trainer -> Trainer, volunteer -> Volunteer)
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        const newUser = new User({
+            user_name: `${firstName} ${lastName}`,  // Combine first + last
+            email: email,
+            user_password: password,               // Will be hashed by pre-save middleware
+            user_role: formattedRole
+        });
+
+        await newUser.save();
+        res.status(201).json({ message: 'User registered successfully' });
+
+    } catch (err) {
+        console.error('Signup error:', err);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
 });
 
 // Handle sign-in form submission
