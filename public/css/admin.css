@@ -152,7 +152,7 @@ body {
 .btn {
   border: none;
   border-radius: 7px;
-  padding: 8px 32px; /* Reduce width for better fit */
+  padding: 8px 40px; /* Reduce width for better fit */
   font-size: 15px;
   font-weight: 500;
   margin-right: 12px; /* Remove margin, use gap instead */
@@ -172,4 +172,9 @@ body {
 
 .btn:last-child {
   margin-right: 0; /* No space after last button */
+}
+
+.sidebar-nav a {
+  text-decoration: none;
+  color: inherit;
 }
