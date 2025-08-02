@@ -1,0 +1,175 @@
+body {
+  background: #fafaf9;
+  font-family: 'Inter', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  margin:0;
+  padding:0;
+  width: 100vw;
+ 
+}
+
+.sidebar {
+  width: 320px;
+  background: #fff;
+  border-right: 1px solid #eee;
+  padding: 32px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin:0;
+}
+
+.logo img {
+  width: 160px;
+  margin-bottom: 32px;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.sidebar-nav li {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: #14532d;
+  font-size: 18px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+
+.sidebar-nav li.active,
+.sidebar-nav li:hover {
+  background: #d1fae5;
+}
+
+.sidebar-nav .icon img {
+  width: 28px;
+  margin-right: 16px;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Add more space around the box */
+  padding: 60px 0;
+  margin-left: 40px; 
+}
+
+.requests-section {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 40px;
+  min-width: 1300px;
+}
+
+.requests-section h2 {
+  color: #14532d;
+  font-size: 24px;
+  margin-bottom: 24px;
+  font-weight: 900;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  border: 1px solid #198754;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #fff;
+  width: 400px;
+}
+
+.search-bar .search-icon {
+  font-size: 20px;
+  color: #198754;
+  margin-right: 8px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 10px 0;
+  width: 100%;
+  background: transparent;
+}
+
+.requests-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.requests-table th, .requests-table td {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 16px;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.requests-table th {
+  background: #f3f4f6;
+  color: #14532d;
+  font-weight: 700;
+  border-top: 1px solid #e5e7eb;
+}
+
+.requests-table tr {
+  border-bottom: 1px solid #eee;
+}
+
+.requests-table td:last-child,
+.requests-table th:last-child {
+  text-align: center;
+  display: table-cell; /* Remove flex layout */
+  justify-content: unset;
+  align-items: unset;
+  gap: unset;
+}
+
+
+
+.btn {
+  border: none;
+  border-radius: 7px;
+  padding: 8px 32px; /* Reduce width for better fit */
+  font-size: 15px;
+  font-weight: 500;
+  margin-right: 12px; /* Remove margin, use gap instead */
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn.accept {
+  background: #198754;
+  color: #fff;
+}
+
+.btn.deny {
+  background: #b91c1c;
+  color: #fff;
+}
+
+.btn:last-child {
+  margin-right: 0; /* No space after last button */
+}
