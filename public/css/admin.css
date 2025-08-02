@@ -98,7 +98,11 @@ body {
   font-size: 20px;
   color: #198754;
   margin-right: 8px;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
 }
+
 
 .search-bar input {
   border: none;
