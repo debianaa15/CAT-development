@@ -127,9 +127,14 @@ app.use(express.static('public'));
 app.get('/furadoption', (req, res) => {
   res.render('furadaption');
 });
+
 // Admin Adoption Request route
 app.get('/adminadoptionrequest', (req, res) => {
   res.render('adminadoptionrequest');
+});
+
+app.get('/admin/trainer-users', (req, res) => {
+  res.render('admintraineruserlist');
 });
 
 // Helper function to generate week data
