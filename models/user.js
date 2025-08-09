@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     user_name: { type: String, required: true }, // Full name
     email: { type: String, required: true, unique: true },
     user_password: { type: String, required: true }, // Hashed password
-    user_role: { type: String, enum: ['Volunteer', 'Trainer'], required: true },
+    user_role: { type: String, enum: ['Volunteer', 'Trainer', 'Admin'], required: true },
     user_quota: { type: String, enum: ['Completed', 'Incomplete'], default: 'Incomplete' }
 });
 
