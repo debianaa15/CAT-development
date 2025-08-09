@@ -1,5 +1,10 @@
 /* about.css for About PUSA page */
 
+/* Content wrapper to account for fixed header */
+.about-content-wrapper {
+  padding-top: 80px; /* Account for fixed header height */
+}
+
 .about-header {
   display: flex;
   align-items: center;

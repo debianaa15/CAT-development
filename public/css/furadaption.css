@@ -1,3 +1,8 @@
+/* Content wrapper to account for fixed header */
+.furadoption-content-wrapper {
+  padding-top: 80px; /* Account for fixed header height */
+}
+
 .adoption-cat-b2{
      position: absolute;
   left: 1.9rem;

@@ -1,4 +1,19 @@
-/* about.css for About PUSA page */
+/* myprofile.css for My Profile page */
+
+/* Content wrapper to account for fixed header */
+.myprofile-content-wrapper {
+  padding-top: 80px; /* Account for fixed header height */
+}
+
+/* Active state for profile button */
+.icon-circle.active {
+  background: var(--primary-color, #02522E);
+  color: white;
+}
+
+.icon-circle.active img {
+  filter: brightness(0) invert(1); /* Makes icon white */
+}
 
 .about-header {
   display: flex;

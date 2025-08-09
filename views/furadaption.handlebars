@@ -1,33 +1,64 @@
 <link rel="stylesheet" href="/css/furadaption.css">
 
-<div class="top-header" style="position: relative; align-items: center; min-height: 60px;">
-
-  <div class="logo-section">
-    <img src="/img/pusa.png" alt="DLSU PUSA" class="logo">
-  </div>
-
-  <div class="desktop-nav-group">
-    <button class="icon-circle desktop-only" id="dashboardBtn" aria-label="Dashboard">
-      <img src="/img/dashboard.png" alt="Dashboard" class="circle-icon">
-    </button>
-    <button class="btn-outline desktop-only" id="furAdoptionBtn">Fur Adoption</button>
-    <div class="dropdown-container">
-      <button class="icon-circle desktop-only" id="menuBtn" aria-label="Menu">
-        <img src="/img/menu.png" alt="Menu" class="menu-icon">
-      </button>
-      <div class="dropdown-menu" id="menuDropdown" style="display: none; width: 180px; position: absolute; right: 0; top: 50px; z-index: 100;">
-        <div class="dropdown-item" id="profileSettings">Profile Settings</div>
-        <div class="dropdown-item" id="aboutPusa">About PUSA</div>
-        <div class="dropdown-item" id="signOut">Sign Out</div>
-      </div>
+<div class="page-header">
+    <div class="logo-section">
+        <img src="/img/pusa.png" alt="DLSU PUSA" class="page-logo">
     </div>
-  </div>
+    
+    <div class="nav-buttons">
+        <button class="icon-circle" id="profileBtn" aria-label="Profile">
+            <img src="/img/dashboard.png" alt="Profile" class="circle-icon">
+        </button>
+        <button class="btn-outline active" id="furAdoptionBtn">Fur Adoption</button>
+        <div class="dropdown">
+            <button class="icon-circle" id="menuBtn" aria-label="Menu">
+                <img src="/img/menu.png" alt="Menu" class="menu-icon">
+            </button>
+            <div class="dropdown-content" id="dropdownMenu">
+                <a href="/profile" class="dropdown-item">
+                    <span class="dropdown-icon">👤</span>
+                    Profile Settings
+                </a>
+                <a href="/about" class="dropdown-item">
+                    <span class="dropdown-icon">ℹ️</span>
+                    About PUSA
+                </a>
+                {{#if isAdmin}}
+                <hr class="dropdown-separator">
+                <div class="dropdown-item admin-section-title">
+                    <span class="dropdown-icon">🔧</span>
+                    Admin Panel
+                </div>
+                <a href="/adminadoptionrequest" class="dropdown-item" id="adminAdoptionRequests">
+                    <span class="dropdown-icon">📋</span>
+                    Adoption Requests
+                </a>
+                <a href="/admin/trainer-users" class="dropdown-item" id="adminTrainerUsers">
+                    <span class="dropdown-icon">👨‍🏫</span>
+                    Manage Trainers
+                </a>
+                <a href="/admin/volunteer-users" class="dropdown-item" id="adminVolunteerUsers">
+                    <span class="dropdown-icon">🙋‍♂️</span>
+                    Manage Volunteers
+                </a>
+                <a href="/admin/cats" class="dropdown-item" id="adminCats">
+                    <span class="dropdown-icon">🐱</span>
+                    Manage Cats
+                </a>
+                {{/if}}
+                <a href="#" class="dropdown-item" id="signOutBtn">
+                    <span class="dropdown-icon">🚪</span>
+                    Sign Out
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="about-header">
- 
-  </a>
-  <h1 class="about-title">Fur Adoption</h1>
-</div>
+
+<div class="furadoption-content-wrapper">
+    <div class="about-header">
+      <h1 class="about-title">Fur Adoption</h1>
+    </div>
 
 
 <main class="furadoption-main">
@@ -75,5 +106,6 @@
     </section>
   </div>
 </main>
+</div>
 <script src="/js/script.js"></script>
 
