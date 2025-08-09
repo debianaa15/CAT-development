@@ -104,35 +104,37 @@
     </div>
     <div class="slot-cards-section">
       {{#each weekDays}}
-        <div class="day-slot-cards" data-day="{{dayName}}">
+        <div class="day-slot-cards horizontal-slot-cards" data-day="{{dayName}}">
           {{#unless (eq dayName "SUN")}}
-          <div class="slot-card nook-card">
-            <div class="slot-card-header nook-header">
-              Nook
-              <span class="slot-card-time">2:00 - 3:00 PM</span>
+          <div class="slot-cards-flex-row">
+            <div class="slot-card nook-card" data-day="{{dayName}}">
+              <div class="slot-card-header nook-header">
+                Nook
+                <span class="slot-card-time">2:00 - 3:00 PM</span>
+              </div>
+              <div class="slot-card-body slot-card-body-column">
+                <span class="slot-card-trainer" data-day="{{dayName}}">No trainer assigned</span>
+                <span class="slot-card-volunteer" data-day="{{dayName}}">Waiting for trainer</span>
+              </div>
+              <div class="slot-card-flexfill"></div>
+              <div class="slot-card-view">
+                <img class="mouse-icon1" src="/img/mouse1.png" alt="Mouse icon" />Click to view
+              </div>
             </div>
-            <div class="slot-card-body slot-card-body-column">
-              <span class="slot-card-trainer">Trainer-only</span>
-              <span class="slot-card-volunteer">Not open to volunteers</span>
-            </div>
-            <div class="slot-card-flexfill"></div>
-            <div class="slot-card-view">
-              <img class="mouse-icon1" src="/img/mouse1.png" alt="Mouse icon" />Click to view
-            </div>
-          </div>
-          <div class="slot-card feeding-card">
-            <div class="slot-card-header feeding-header">
-              Feeding
-              <span class="slot-card-time">4:00 - 6:00 PM</span>
-            </div>
-            <div class="slot-card-body slot-card-body-row">
-              <span class="slot-card-status full"></span>
-              <span class="slot-card-full">Full</span>
-              <span class="slot-card-reserved">5/5 reserved</span>
-            </div>
-            <div class="slot-card-flexfill"></div>
-            <div class="slot-card-view">
-              <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to view
+            <div class="slot-card feeding-card" data-day="{{dayName}}">
+              <div class="slot-card-header feeding-header">
+                Feeding
+                <span class="slot-card-time">4:00 - 6:00 PM</span>
+              </div>
+              <div class="slot-card-body slot-card-body-row">
+                <span class="slot-card-status available" data-day="{{dayName}}"></span>
+                <span class="slot-card-full" data-day="{{dayName}}">Available</span>
+                <span class="slot-card-reserved" data-day="{{dayName}}">0/5 reserved</span>
+              </div>
+              <div class="slot-card-flexfill"></div>
+              <div class="slot-card-view">
+                <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to view
+              </div>
             </div>
           </div>
           {{/unless}}
@@ -164,8 +166,29 @@
 
 <script src="/js/script.js"></script>
 <script>
-// Modal logic
+// Dynamic slot management system
+let slotData = {};
+
+// Initialize slot data for each day
 document.addEventListener('DOMContentLoaded', function() {
+  const weekDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  
+  weekDays.forEach(day => {
+    slotData[day] = {
+      nook: {
+        trainer: null,
+        status: 'waiting'
+      },
+      feeding: {
+        trainer: null,
+        volunteers: [],
+        maxVolunteers: 5,
+        status: 'available'
+      }
+    };
+  });
+
+  // Modal logic
   const modal = document.getElementById('slotModal');
   const closeModal = document.getElementById('closeModal');
   const modalBody = document.getElementById('modalBody');
@@ -175,115 +198,195 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       e.stopPropagation();
       
-      // Get slot card details
       const slotCard = btn.closest('.slot-card');
-      let slotType = 'Nook';
-      let slotTime = '2:00 - 3:00 PM';
+      const dayElement = slotCard.closest('.day-slot-cards');
+      const currentDay = dayElement.getAttribute('data-day');
       
       if (slotCard && slotCard.classList.contains('feeding-card')) {
-        // Feeding slot modal
-        modalBody.innerHTML = `
-          <div class="modal-slot-card">
-            <div class="modal-slot-header feeding-modal-header">
-              <div class="modal-slot-title">Feeding</div>
-              <div class="modal-slot-time">4:00 - 6:00 PM</div>
-            </div>
-            <div class="modal-slot-content">
-              <div class="modal-slot-row modal-slot-row-user">
-                <div class="modal-slot-user-info">
-                  <div class="modal-slot-user">John Doe</div>
-                </div>
-                <div class="modal-slot-status">
-                  <div class="modal-slot-status-dot feeding-status-dot"></div>
-                  <div class="modal-slot-status-text feeding-status-text">Full</div>
-                </div>
-              </div>
-              <div class="modal-slot-role">Trainer</div>
-              <div class="modal-slot-row modal-slot-row-volunteers">
-                <div class="modal-slot-vol-label">Listed Volunteers:</div>
-                <div class="modal-slot-vol-count feeding-vol-count">5/5 reserved</div>
-              </div>
-              <div class="modal-slot-volunteers">
-                <div class="modal-slot-vol feeding-vol">Chris Hemsworth</div>
-                <div class="modal-slot-vol feeding-vol">Scarlett Johansson</div>
-                <div class="modal-slot-vol feeding-vol">Robert Downey Jr.</div>
-                <div class="modal-slot-vol feeding-vol">Chris Evans</div>
-                <div class="modal-slot-vol feeding-vol">Jeremy Renner</div>
-              </div>
-              <div id="modalButtons" class="modal-slot-buttons">
-                <button class="modal-slot-reserved-btn feeding-full-btn">Slot Full</button>
-              </div>
-            </div>
-          </div>
-        `;
-        modal.style.display = 'flex';
-        return;
+        showFeedingModal(currentDay);
+      } else {
+        showNookModal(currentDay);
       }
-      // Default (Nook) modal
-      modalBody.innerHTML = `
-        <div class="modal-slot-card">
-          <div class="modal-slot-header">
-            <div class="modal-slot-title">${slotType}</div>
-            <div class="modal-slot-time">${slotTime}</div>
-          </div>
-          <div class="modal-slot-content">
-            <div class="modal-slot-row modal-slot-row-user">
-              <div class="modal-slot-user-info">
-                <div class="modal-slot-user">John Doe</div>
-              </div>
-              <div class="modal-slot-status">
-                <div class="modal-slot-status-dot"></div>
-                <div class="modal-slot-status-text">Open</div>
-              </div>
-            </div>
-            <div class="modal-slot-role">Trainer</div>
-            <div class="modal-slot-row modal-slot-row-volunteers">
-              <div class="modal-slot-vol-label">Listed Volunteers:</div>
-              <div class="modal-slot-vol-count">3/5 reserved</div>
-            </div>
-            <div class="modal-slot-volunteers">
-              <div class="modal-slot-vol">Chris Hemsworth</div>
-              <div class="modal-slot-vol">Scarlett Johansson</div>
-              <div class="modal-slot-vol">Robert Downey Jr.</div>
-            </div>
-            <div id="modalButtons" class="modal-slot-buttons">
-              <button id="reserveBtn" class="modal-slot-reserve-btn">Reserve Slot</button>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Add event listener for Reserve Slot button
-      const reserveBtn = document.getElementById('reserveBtn');
-      if (reserveBtn) {
-        reserveBtn.addEventListener('click', function() {
-          const modalButtons = document.getElementById('modalButtons');
-          if (modalButtons) {
-            modalButtons.innerHTML = `
-              <button class="modal-slot-reserved-btn">Slot Reserved</button>
-              <button id="cancelBtn" class="modal-slot-cancel-btn">Cancel Slot</button>
-            `;
-            // Add event listener for Cancel Slot
-            const cancelBtn = document.getElementById('cancelBtn');
-            if (cancelBtn) {
-              cancelBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
-              });
-            }
-          }
-        });
-      }
-
+      
       modal.style.display = 'flex';
     });
   });
 
+  // Close modal functionality
+  closeModal.addEventListener('click', function() {
+    modal.style.display = 'none';
+  });
 
-  // Close modal when clicking outside
   window.addEventListener('click', function(e) {
     if (e.target === modal) {
       modal.style.display = 'none';
     }
   });
 });
+
+function showNookModal(day) {
+  const modalBody = document.getElementById('modalBody');
+  const nookData = slotData[day].nook;
+  
+  let trainerInfo = 'No trainer assigned';
+  let statusText = 'Waiting for trainer';
+  let statusColor = '#FF9800';
+  
+  if (nookData.trainer) {
+    trainerInfo = nookData.trainer;
+    statusText = 'Trainer assigned';
+    statusColor = '#2dbe60';
+  }
+  
+  modalBody.innerHTML = `
+    <div class="modal-slot-card">
+      <div class="modal-slot-header">
+        <div class="modal-slot-title">Nook</div>
+        <div class="modal-slot-time">2:00 - 3:00 PM</div>
+      </div>
+      <div class="modal-slot-content">
+        <div class="modal-slot-row modal-slot-row-user">
+          <div class="modal-slot-user-info">
+            <div class="modal-slot-user">${trainerInfo}</div>
+          </div>
+          <div class="modal-slot-status">
+            <div class="modal-slot-status-dot" style="background: ${statusColor};"></div>
+            <div class="modal-slot-status-text" style="color: ${statusColor};">${statusText}</div>
+          </div>
+        </div>
+        <div class="modal-slot-role">Trainer-only slot</div>
+        <div class="modal-slot-row modal-slot-row-volunteers">
+          <div class="modal-slot-vol-label">Volunteer Access:</div>
+          <div class="modal-slot-vol-count">Not available</div>
+        </div>
+        <div class="modal-slot-volunteers">
+          <div style="color: #6c7a89; font-style: italic;">This slot is reserved for trainers only.</div>
+        </div>
+        <div id="modalButtons" class="modal-slot-buttons">
+          <button class="modal-slot-reserved-btn" style="background: #6c7a89;">Trainer Only</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function showFeedingModal(day) {
+  const modalBody = document.getElementById('modalBody');
+  const feedingData = slotData[day].feeding;
+  const currentUser = '{{user.name}}';
+  const isUserReserved = feedingData.volunteers.includes(currentUser);
+  const availableSpots = feedingData.maxVolunteers - feedingData.volunteers.length;
+  
+  let trainerInfo = feedingData.trainer || 'No trainer assigned';
+  let statusText = availableSpots > 0 ? 'Available' : 'Full';
+  let statusColor = availableSpots > 0 ? '#2dbe60' : '#F44336';
+  
+  // Generate volunteer list HTML
+  let volunteersHTML = '';
+  if (feedingData.volunteers.length > 0) {
+    volunteersHTML = feedingData.volunteers.map(volunteer => 
+      `<div class="modal-slot-vol">${volunteer}</div>`
+    ).join('');
+  } else {
+    volunteersHTML = '<div style="color: #6c7a89; font-style: italic;">No volunteers signed up yet</div>';
+  }
+  
+  // Generate button HTML
+  let buttonHTML = '';
+  if (isUserReserved) {
+    buttonHTML = `
+      <button class="modal-slot-reserved-btn">You're Registered</button>
+      <button id="cancelBtn" class="modal-slot-cancel-btn" onclick="cancelReservation('${day}')">Cancel Reservation</button>
+    `;
+  } else if (availableSpots > 0) {
+    buttonHTML = `<button id="reserveBtn" class="modal-slot-reserve-btn" onclick="makeReservation('${day}')">Reserve Slot</button>`;
+  } else {
+    buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #6c7a89;">Slot Full</button>`;
+  }
+  
+  modalBody.innerHTML = `
+    <div class="modal-slot-card">
+      <div class="modal-slot-header feeding-modal-header">
+        <div class="modal-slot-title">Feeding</div>
+        <div class="modal-slot-time">4:00 - 6:00 PM</div>
+      </div>
+      <div class="modal-slot-content">
+        <div class="modal-slot-row modal-slot-row-user">
+          <div class="modal-slot-user-info">
+            <div class="modal-slot-user">${trainerInfo}</div>
+          </div>
+          <div class="modal-slot-status">
+            <div class="modal-slot-status-dot" style="background: ${statusColor};"></div>
+            <div class="modal-slot-status-text" style="color: ${statusColor};">${statusText}</div>
+          </div>
+        </div>
+        <div class="modal-slot-role">Open to volunteers</div>
+        <div class="modal-slot-row modal-slot-row-volunteers">
+          <div class="modal-slot-vol-label">Registered Volunteers:</div>
+          <div class="modal-slot-vol-count">${feedingData.volunteers.length}/${feedingData.maxVolunteers} reserved</div>
+        </div>
+        <div class="modal-slot-volunteers">
+          ${volunteersHTML}
+        </div>
+        <div id="modalButtons" class="modal-slot-buttons">
+          ${buttonHTML}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function makeReservation(day) {
+  const currentUser = '{{user.name}}';
+  const feedingData = slotData[day].feeding;
+  
+  if (feedingData.volunteers.length < feedingData.maxVolunteers && !feedingData.volunteers.includes(currentUser)) {
+    feedingData.volunteers.push(currentUser);
+    updateSlotDisplay(day);
+    showFeedingModal(day); // Refresh modal
+    
+    // Show success message
+    alert('Slot reserved successfully!');
+  }
+}
+
+function cancelReservation(day) {
+  const currentUser = '{{user.name}}';
+  const feedingData = slotData[day].feeding;
+  
+  const userIndex = feedingData.volunteers.indexOf(currentUser);
+  if (userIndex > -1) {
+    feedingData.volunteers.splice(userIndex, 1);
+    updateSlotDisplay(day);
+    showFeedingModal(day); // Refresh modal
+    
+    // Show cancellation message
+    alert('Reservation cancelled successfully!');
+  }
+}
+
+function updateSlotDisplay(day) {
+  const feedingData = slotData[day].feeding;
+  const availableSpots = feedingData.maxVolunteers - feedingData.volunteers.length;
+  
+  // Update feeding card display
+  const feedingCard = document.querySelector(`.feeding-card[data-day="${day}"]`);
+  if (feedingCard) {
+    const statusDot = feedingCard.querySelector('.slot-card-status');
+    const statusText = feedingCard.querySelector('.slot-card-full');
+    const reservedText = feedingCard.querySelector('.slot-card-reserved');
+    
+    if (availableSpots > 0) {
+      statusDot.className = 'slot-card-status available';
+      statusText.textContent = 'Available';
+      statusText.style.color = '#205C3B';
+    } else {
+      statusDot.className = 'slot-card-status full';
+      statusText.textContent = 'Full';
+      statusText.style.color = '#F44336';
+    }
+    
+    reservedText.textContent = `${feedingData.volunteers.length}/${feedingData.maxVolunteers} reserved`;
+  }
+}
 </script>

@@ -1,4 +1,3 @@
-
 <div class="page-header">
     <div class="logo-section">
         <img src="/img/pusa.png" alt="DLSU PUSA" class="page-logo">
@@ -127,7 +126,7 @@
                           </div>
                           <div class="slot-card-view">
                             <div class="slot-card-assign-nook-btn" data-day="{{dayName}}" onclick="openNookSlotModal(event)" style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-                              <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to assign yourself
+                              <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to assign yourself or for volunteers
                             </div>
                           </div>
                         </div>
@@ -144,7 +143,7 @@
                         <div class="slot-card-flexfill"></div>
                         <div class="slot-card-view">
                           <div class="slot-card-assign-feed-btn" data-day="{{dayName}}" onclick="openFeedingSlotModal(event)" style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-                            <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to assign yourself
+                            <img class="mouse-icon" src="/img/mouse1.png" alt="Mouse icon" />Click to assign yourself or for volunteers
                           </div>
                         </div>
                       </div>
@@ -247,7 +246,6 @@ function getCurrentWeekParam() {
 
 document.getElementById('nextWeek').addEventListener('click', function(e) {
   e.preventDefault();
-  // Calculate next week (example logic, adjust as needed)
   let currentWeek = getCurrentWeekParam();
   let nextWeek = getNextWeek(currentWeek);
   window.location.href = '/trainer?week=' + nextWeek;
@@ -255,14 +253,12 @@ document.getElementById('nextWeek').addEventListener('click', function(e) {
 
 document.getElementById('prevWeek').addEventListener('click', function(e) {
   e.preventDefault();
-  // Calculate previous week (example logic, adjust as needed)
   let currentWeek = getCurrentWeekParam();
   let prevWeek = getPrevWeek(currentWeek);
   window.location.href = '/trainer?week=' + prevWeek;
 });
 
 function getNextWeek(weekStr) {
-  // weekStr format: YYYY-MM-DD
   let d = weekStr ? new Date(weekStr) : new Date();
   d.setDate(d.getDate() + 7);
   return d.toISOString().slice(0, 10);
@@ -272,177 +268,306 @@ function getPrevWeek(weekStr) {
   d.setDate(d.getDate() - 7);
   return d.toISOString().slice(0, 10);
 }
-// Updated script to work with your existing structure
+
+// Enhanced slot state management
 let nookSlotState = {};
+let feedingSlotState = {};
 let currentFeedingDay = null;
+let currentNookDay = null;
+
+// Initialize slot states for each day
+const weekDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+weekDays.forEach(day => {
+  nookSlotState[day] = {
+    assigned: false,
+    trainerOnly: false,
+    trainer: null,
+    allowVolunteers: false
+  };
+  feedingSlotState[day] = {
+    assigned: false,
+    trainerOnly: false,
+    trainer: null,
+    allowVolunteers: false,
+    volunteers: [],
+    maxVolunteers: 5
+  };
+});
 
 function openFeedingSlotModal(event) {
   var modal = document.getElementById('feedingSlotModal');
   var assignContent = document.getElementById('feedingModalContent');
   var claimedContent = document.getElementById('feedingModalClaimedContent');
+  
   if (event && event.currentTarget) {
     currentFeedingDay = event.currentTarget.getAttribute('data-day');
     currentNookDay = null;
   }
-  if (modal) {
+  
+  if (modal && currentFeedingDay) {
     modal.style.display = 'flex';
-    // Show correct modal content
-    if (window.feedingSlotState && window.feedingSlotState[currentFeedingDay]) {
+    const dayState = feedingSlotState[currentFeedingDay];
+    
+    if (dayState.assigned) {
+      // Show claimed content
+      updateFeedingClaimedContent();
       assignContent.style.display = 'none';
       claimedContent.style.display = 'block';
     } else {
+      // Show assignment options
       assignContent.style.display = 'block';
       claimedContent.style.display = 'none';
+      // Reset radio buttons
+      document.querySelector('input[name="feedingSlotType"][value="justYou"]').checked = true;
     }
   }
-
 }
+
 function openNookSlotModal(event) {
   var modal = document.getElementById('nookSlotModal');
   var assignContent = document.getElementById('nookModalContent');
   var claimedContent = document.getElementById('nookModalClaimedContent');
+  
   if (event && event.currentTarget) {
     currentNookDay = event.currentTarget.getAttribute('data-day');
     currentFeedingDay = null;
   }
-  if (modal) {
+  
+  if (modal && currentNookDay) {
     modal.style.display = 'flex';
-    // Show correct modal content
-    if (nookSlotState[currentNookDay]) {
+    const dayState = nookSlotState[currentNookDay];
+    
+    if (dayState.assigned) {
+      // Show claimed content
+      updateNookClaimedContent();
       assignContent.style.display = 'none';
       claimedContent.style.display = 'block';
     } else {
+      // Show assignment options
       assignContent.style.display = 'block';
       claimedContent.style.display = 'none';
+      // Reset radio buttons
+      document.querySelector('input[name="nookSlotType"][value="justYou"]').checked = true;
     }
   }
 }
+
 function takeNookSlot() {
-  var modal = document.getElementById('nookSlotModal');
-  var assignContent = document.getElementById('nookModalContent');
-  var claimedContent = document.getElementById('nookModalClaimedContent');
-  if (currentNookDay) {
-    nookSlotState[currentNookDay] = true;
-    const nookLabel = document.querySelector('.nook-card-status-label[data-day="' + currentNookDay + '"]');
-    const nookDot = document.querySelector('.nook-card-status-dot[data-day="' + currentNookDay + '"]');
-    const nookText = document.querySelector('.nook-card-status-text[data-day="' + currentNookDay + '"]');
-    if (nookLabel) {
-      nookLabel.textContent = 'You own this slot';
-      nookLabel.style.color = '#2dbe60';
-    }
-    if (nookDot) {
-      nookDot.style.background = '#ffd600';
-    }
-    if (nookText) {
-      nookText.textContent = 'You own this slot';
-      nookText.style.color = '#ffd600';
-    }
-    // Show claimed modal content
-    assignContent.style.display = 'none';
-    claimedContent.style.display = 'block';
-  }
+  if (!currentNookDay) return;
+  
+  const selectedOption = document.querySelector('input[name="nookSlotType"]:checked');
+  if (!selectedOption) return;
+  
+  const isTrainerOnly = selectedOption.value === 'justYou';
+  const dayState = nookSlotState[currentNookDay];
+  
+  // Update state
+  dayState.assigned = true;
+  dayState.trainer = '{{user.name}}'; // Use actual trainer name
+  dayState.trainerOnly = isTrainerOnly;
+  dayState.allowVolunteers = !isTrainerOnly;
+  
+  // Update card display
+  updateNookCardDisplay(currentNookDay);
+  
+  // Update modal content
+  updateNookClaimedContent();
+  
+  // Switch to claimed view
+  document.getElementById('nookModalContent').style.display = 'none';
+  document.getElementById('nookModalClaimedContent').style.display = 'block';
+  
+  alert('Nook slot assigned successfully!');
 }
+
+function takeSlot() {
+  if (!currentFeedingDay) return;
+  
+  const selectedOption = document.querySelector('input[name="feedingSlotType"]:checked');
+  if (!selectedOption) return;
+  
+  const isTrainerOnly = selectedOption.value === 'justYou';
+  const dayState = feedingSlotState[currentFeedingDay];
+  
+  // Update state
+  dayState.assigned = true;
+  dayState.trainer = '{{user.name}}'; // Use actual trainer name
+  dayState.trainerOnly = isTrainerOnly;
+  dayState.allowVolunteers = !isTrainerOnly;
+  
+  // Update card display
+  updateFeedingCardDisplay(currentFeedingDay);
+  
+  // Update modal content
+  updateFeedingClaimedContent();
+  
+  // Switch to claimed view
+  document.getElementById('feedingModalContent').style.display = 'none';
+  document.getElementById('feedingModalClaimedContent').style.display = 'block';
+  
+  alert('Feeding slot assigned successfully!');
+}
+
 function cancelNookSlot() {
-  var modal = document.getElementById('nookSlotModal');
-  var assignContent = document.getElementById('nookModalContent');
-  var claimedContent = document.getElementById('nookModalClaimedContent');
-  if (currentNookDay) {
-    nookSlotState[currentNookDay] = false;
-    const nookLabel = document.querySelector('.nook-card-status-label[data-day="' + currentNookDay + '"]');
-    const nookDot = document.querySelector('.nook-card-status-dot[data-day="' + currentNookDay + '"]');
-    const nookText = document.querySelector('.nook-card-status-text[data-day="' + currentNookDay + '"]');
-    if (nookLabel) {
+  if (!currentNookDay) return;
+  
+  const dayState = nookSlotState[currentNookDay];
+  
+  // Reset state
+  dayState.assigned = false;
+  dayState.trainer = null;
+  dayState.trainerOnly = false;
+  dayState.allowVolunteers = false;
+  
+  // Update card display
+  updateNookCardDisplay(currentNookDay);
+  
+  // Switch to assignment view
+  document.getElementById('nookModalContent').style.display = 'block';
+  document.getElementById('nookModalClaimedContent').style.display = 'none';
+  
+  alert('Nook slot cancelled successfully!');
+}
+
+function cancelFeedingSlot() {
+  if (!currentFeedingDay) return;
+  
+  const dayState = feedingSlotState[currentFeedingDay];
+  
+  // Reset state
+  dayState.assigned = false;
+  dayState.trainer = null;
+  dayState.trainerOnly = false;
+  dayState.allowVolunteers = false;
+  dayState.volunteers = [];
+  
+  // Update card display
+  updateFeedingCardDisplay(currentFeedingDay);
+  
+  // Switch to assignment view
+  document.getElementById('feedingModalContent').style.display = 'block';
+  document.getElementById('feedingModalClaimedContent').style.display = 'none';
+  
+  alert('Feeding slot cancelled successfully!');
+}
+
+function updateNookCardDisplay(day) {
+  const dayState = nookSlotState[day];
+  const nookLabel = document.querySelector('.nook-card-status-label[data-day="' + day + '"]');
+  const nookDot = document.querySelector('.nook-card-status-dot[data-day="' + day + '"]');
+  
+  if (nookLabel && nookDot) {
+    if (dayState.assigned) {
+      if (dayState.trainerOnly) {
+        nookLabel.textContent = 'Trainer Only - You assigned';
+        nookLabel.style.color = '#ffd600';
+        nookDot.style.background = '#ffd600';
+      } else {
+        nookLabel.textContent = 'Open to Volunteers - You assigned';
+        nookLabel.style.color = '#2dbe60';
+        nookDot.style.background = '#2dbe60';
+      }
+    } else {
       nookLabel.textContent = 'Available to Assign';
       nookLabel.style.color = '#2dbe60';
-    }
-    if (nookDot) {
       nookDot.style.background = '#2dbe60';
     }
-    if (nookText) {
-      nookText.textContent = 'Available to Assign';
-      nookText.style.color = '#2dbe60';
-    }
-    // Show assign modal content
-    assignContent.style.display = 'block';
-    claimedContent.style.display = 'none';
   }
 }
+
+function updateFeedingCardDisplay(day) {
+  const dayState = feedingSlotState[day];
+  const statusText = document.querySelector('.slot-card-full[data-day="' + day + '"]');
+  const statusDot = document.querySelector('.slot-card-status[data-day="' + day + '"]');
+  
+  if (statusText && statusDot) {
+    if (dayState.assigned) {
+      if (dayState.trainerOnly) {
+        statusText.textContent = 'Trainer Only - You assigned';
+        statusText.style.color = '#ffd600';
+        statusDot.style.background = '#ffd600';
+        statusDot.classList.remove('available');
+        statusDot.classList.add('full');
+      } else {
+        statusText.textContent = 'Open to Volunteers - You assigned';
+        statusText.style.color = '#2dbe60';
+        statusDot.style.background = '#2dbe60';
+        statusDot.classList.remove('available');
+        statusDot.classList.add('full');
+      }
+    } else {
+      statusText.textContent = 'Available to Assign';
+      statusText.style.color = '#2dbe60';
+      statusDot.style.background = '#2dbe60';
+      statusDot.classList.remove('full');
+      statusDot.classList.add('available');
+    }
+  }
+}
+
+function updateNookClaimedContent() {
+  if (!currentNookDay) return;
+  
+  const dayState = nookSlotState[currentNookDay];
+  const claimedContent = document.getElementById('nookModalClaimedContent');
+  
+  const statusText = dayState.trainerOnly ? 'Trainer-Only' : 'Open to Volunteers';
+  const statusColor = dayState.trainerOnly ? '#ffd600' : '#2dbe60';
+  
+  claimedContent.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <span style="font-size:1.2em;font-weight:700;color:#2d3a4b;">${dayState.trainer}</span>
+      <span style="color:${statusColor};font-weight:600;display:flex;align-items:center;gap:6px;">
+        <span style="background:${statusColor};border-radius:50%;width:16px;height:16px;display:inline-block;margin-right:4px;"></span>
+        You own this slot
+      </span>
+    </div>
+    <div style="color:#6c7a89;font-size:1em;margin-bottom:6px;">
+      <span style="font-size:1.2em;vertical-align:middle;margin-right:6px;">&#128100;</span>
+      You assigned this slot
+    </div>
+    <div style="color:#a0a0a0;font-size:1em;margin-bottom:16px;">
+      Status: <b>${statusText}</b>
+    </div>
+    <button class="feeding-modal-action-btn" style="background:#d32f2f;" onclick="cancelNookSlot()">Cancel Slot</button>
+  `;
+}
+
+function updateFeedingClaimedContent() {
+  if (!currentFeedingDay) return;
+  
+  const dayState = feedingSlotState[currentFeedingDay];
+  const claimedContent = document.getElementById('feedingModalClaimedContent');
+  
+  const statusText = dayState.trainerOnly ? 'Trainer-Only' : 'Open to Volunteers';
+  const statusColor = dayState.trainerOnly ? '#ffd600' : '#2dbe60';
+  
+  claimedContent.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <span style="font-size:1.2em;font-weight:700;color:#2d3a4b;">${dayState.trainer}</span>
+      <span style="color:${statusColor};font-weight:600;display:flex;align-items:center;gap:6px;">
+        <span style="background:${statusColor};border-radius:50%;width:16px;height:16px;display:inline-block;margin-right:4px;"></span>
+        You own this slot
+      </span>
+    </div>
+    <div style="color:#6c7a89;font-size:1em;margin-bottom:6px;">
+      <span style="font-size:1.2em;vertical-align:middle;margin-right:6px;">&#128100;</span>
+      You assigned this slot
+    </div>
+    <div style="color:#a0a0a0;font-size:1em;margin-bottom:16px;">
+      Status: <b>${statusText}</b>
+      ${!dayState.trainerOnly ? `<br><small>Volunteers can now sign up for this slot</small>` : ''}
+    </div>
+    <button class="feeding-modal-action-btn" style="background:#d32f2f;" onclick="cancelFeedingSlot()">Cancel Slot</button>
+  `;
+}
+
 function closeNookModal() {
   var modal = document.getElementById('nookSlotModal');
   if (modal) {
     modal.style.display = 'none';
   }
 }
-
-
-// Function for taking the slot
-window.feedingSlotState = window.feedingSlotState || {};
-function takeSlot() {
-  const selectedOption = document.querySelector('input[name="feedingSlotType"]:checked');
-  var modal = document.getElementById('feedingSlotModal');
-  var assignContent = document.getElementById('feedingModalContent');
-  var claimedContent = document.getElementById('feedingModalClaimedContent');
-  if (selectedOption && (currentFeedingDay || currentNookDay)) {
-    if (currentFeedingDay) {
-      // Update only the clicked feeding slot status
-      window.feedingSlotState[currentFeedingDay] = true;
-      const statusText = document.querySelector('.slot-card-full[data-day="' + currentFeedingDay + '"]');
-      const statusDot = document.querySelector('.slot-card-status[data-day="' + currentFeedingDay + '"]');
-      if (statusText) {
-        statusText.textContent = 'You own this slot';
-      }
-      if (statusDot) {
-        statusDot.classList.remove('available');
-        statusDot.classList.add('full');
-        statusDot.style.background = '#2dbe60'; // green
-      }
-      // Show claimed modal content
-      assignContent.style.display = 'none';
-      claimedContent.style.display = 'block';
-    } else if (currentNookDay) {
-      // Update only the clicked nook slot status
-      const nookLabel = document.querySelector('.nook-card-status-label[data-day="' + currentNookDay + '"]');
-      const nookDot = document.querySelector('.nook-card-status-dot[data-day="' + currentNookDay + '"]');
-      const nookText = document.querySelector('.nook-card-status-text[data-day="' + currentNookDay + '"]');
-      if (nookLabel) {
-        nookLabel.textContent = 'You own this slot';
-        nookLabel.style.color = '#2dbe60';
-      }
-      if (nookDot) {
-        nookDot.style.background = '#2dbe60';
-      }
-      if (nookText) {
-        nookText.textContent = 'You own this slot';
-        nookText.style.color = '#2dbe60';
-      }
-    }
-    // Optional: Show success message or update UI
-    alert('Slot booked successfully!');
-  }
-}
-
-function cancelFeedingSlot() {
-  var modal = document.getElementById('feedingSlotModal');
-  var assignContent = document.getElementById('feedingModalContent');
-  var claimedContent = document.getElementById('feedingModalClaimedContent');
-  if (currentFeedingDay) {
-    window.feedingSlotState[currentFeedingDay] = false;
-    const statusText = document.querySelector('.slot-card-full[data-day="' + currentFeedingDay + '"]');
-    const statusDot = document.querySelector('.slot-card-status[data-day="' + currentFeedingDay + '"]');
-    if (statusText) {
-      statusText.textContent = 'Available to Assign';
-    }
-    if (statusDot) {
-      statusDot.classList.remove('full');
-      statusDot.classList.add('available');
-      statusDot.style.background = '';
-    }
-    // Show assign modal content
-    assignContent.style.display = 'block';
-    claimedContent.style.display = 'none';
-  }
-}
-
 
 function closeFeedingModal() {
   const modal = document.getElementById('feedingSlotModal');
