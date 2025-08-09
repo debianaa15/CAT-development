@@ -145,7 +145,13 @@ app.use(express.static('public'));
 
 // Fur Adoption route
 app.get('/furadoption', (req, res) => {
-  res.render('furadaption');
+
+    const user = req.session && req.session.user
+        ? req.session.user
+        : { user_name: 'Guest' };  
+    res.render('furadaption', {
+      user
+    });
 });
 
 // Admin Adoption Request route
@@ -243,11 +249,21 @@ app.post('/signin', (req, res) => {
 
 // Route for about page
 app.get('/about', (req, res) => {
-    res.render('about');
+    const user = req.session && req.session.user
+        ? req.session.user
+        : { user_name: 'Guest' };
+    res.render('about', {
+      user
+    });
 });
 
 app.get('/myprofile', (req, res) => {
-    res.render('myprofile');
+    const user = req.session && req.session.user
+        ? req.session.user
+        : { user_name: 'Guest' };
+    res.render('myprofile', {
+      user
+    });
 });
 
 // Main page route

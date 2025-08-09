@@ -7,9 +7,15 @@
     </div>
     
     <div class="nav-buttons">
-        <a class="icon-circle" id="profileBtn" aria-label="Home" href="/main">
-          <img src="/img/dashboard.png" alt="Profile" class="circle-icon"> 
-        </a>
+         {{#if (eq user.role "Trainer")}}
+    <a class="icon-circle" id="profileBtn" aria-label="Home" href="/trainer">
+      <img src="/img/dashboard.png" alt="Profile" class="circle-icon"> 
+    </a>
+  {{else}}
+    <a class="icon-circle" id="profileBtn" aria-label="Home" href="/main">
+      <img src="/img/dashboard.png" alt="Profile" class="circle-icon"> 
+    </a>
+  {{/if}}
         <button class="btn-outline" id="furAdoptionBtn">Fur Adoption</button>
         <div class="dropdown">
             <button class="icon-circle" id="menuBtn" aria-label="Menu">
