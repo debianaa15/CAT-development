@@ -45,8 +45,11 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             alert('Login successful!');
             if (result.role === 'Trainer') {
                 window.location.href = '/trainer';
-            } else {
+            } else if (result.role === 'Volunteer') {
                 window.location.href = '/main';
+            }
+            else if (result.role === 'Admin') {
+                window.location.href = '/adminadoptionrequest';
             }
         } else {
             alert(result.message || 'Login failed');

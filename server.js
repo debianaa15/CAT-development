@@ -1,4 +1,7 @@
+const express = require('express');
+const session = require('express-session');
 const mongoose = require('mongoose');
+
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/DLSU_PUSA_DB', {
@@ -9,15 +12,21 @@ mongoose.connect('mongodb://localhost:27017/DLSU_PUSA_DB', {
 .catch(err => console.error('MongoDB connection error:', err));
 
 
-const express = require('express');
+
 const { engine } = require('express-handlebars');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const path = require('path');
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(session({
+  secret: 'supersecretkey', // replace with env var in production
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // secure:true only if HTTPS
+}));
 
 // Middleware: body-parser must be before any routes
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,12 +53,19 @@ app.post('/login', async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Incorrect password.' });
     }
+    req.session.user = {
+      id: user._id,
+      name: user.user_name,
+      role: user.user_role
+    };
     
     // Success: return user_role for differentiation
     if (user.user_role === 'Trainer') {
       return res.json({ role: user.user_role, redirect: '/trainer' });
-    } else {
-      return res.json({ role: user.user_role });
+    } else if (user.user_role === 'Volunteer') {
+      return res.json({ role: user.user_role, redirect: '/main' });
+    }else if (user.user_role === 'Admin') {
+      return res.json({ role: user.user_role, redirect: '/adminadoptionrequests' });
     }
   } catch (err) {
     console.error('Login error:', err);
@@ -71,12 +87,16 @@ app.get('/trainer', (req, res) => {
     '5 PM',
     '6 PM'
   ];
+  const user = req.session && req.session.user
+        ? req.session.user
+        : { user_name: 'Guest' };
   res.render('trainer', {
     weekDays,
     currentMonth: monthName,
     timeSlots,
     events: events,
-    currentWeek: weekDate.format('YYYY-MM-DD')
+    currentWeek: weekDate.format('YYYY-MM-DD'),
+    user
   });
 });
 // Global events array to fix 'events is not defined' error
@@ -243,12 +263,16 @@ app.get('/main', (req, res) => {
         '5 PM',
         '6 PM'
     ];
+     const user = req.session && req.session.user
+        ? req.session.user
+        : { user_name: 'Guest' };
     res.render('index', {
         weekDays,
         currentMonth: monthName,
         timeSlots,
         events: events,
-        currentWeek: weekDate.format('YYYY-MM-DD')
+        currentWeek: weekDate.format('YYYY-MM-DD'),
+        user
     });
 });
 
