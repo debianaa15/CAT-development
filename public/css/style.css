@@ -144,17 +144,94 @@ body {
 
 
 
-/* Top Header */
-.top-header {
+/* Page Header */
+.page-header {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
-    gap: 17px;
+    justify-content: space-between;
     align-items: center;
+    background: white;
+    padding: 15px 30px;
     z-index: 1000;
-    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 60px;
+}
 
+.logo-section {
+    display: flex;
+    align-items: center;
+}
+
+.page-logo {
+    width: 120px;
+    height: auto;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    z-index: 1001;
+    padding: 8px 0;
+    margin-top: 5px;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-icon {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.dropdown-separator {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 8px 0;
+}
+
+.admin-section-title {
+    font-weight: 600;
+    color: #02522E;
+    cursor: default;
+}
+
+.admin-section-title:hover {
+    background-color: transparent;
 }
 
 /* ...existing code... */
@@ -178,11 +255,21 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.btn-outline.active {
+    background: var(--primary-color);
+    color: white;
+}
+
 .btn-outline:hover {
-    background: rgba(1, 94, 52, 0.25); /* #015E34 at 25% opacity */
+    background: rgba(1, 94, 52, 0.25);
     color: var(--primary-color);
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline.active:hover {
+    background: var(--primary-dark);
+    color: white;
 }
 
 .icon-circle {
@@ -215,18 +302,6 @@ body {
     display: block;
 }
 
-.logo-section {
-    position: absolute;
-    left: 50px;
-    top: -20px;
-}
-
-.logo {
-    width: 166px;
-    height: 135px;
-
-}
-
 .app-name {
     display: none; /* Hidden as per design */
 }
@@ -237,6 +312,7 @@ body {
     height: 100%;
     position: relative;
     background: var(--bg-primary);
+    padding-top: 80px; /* Account for fixed header */
 }
 
 .scheduler-container {

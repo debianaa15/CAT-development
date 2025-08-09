@@ -1,17 +1,31 @@
 // Dropdown menu logic for menu button
 document.addEventListener('DOMContentLoaded', function() {
   const menuBtn = document.getElementById('menuBtn');
-  const menuDropdown = document.getElementById('menuDropdown');
+  const dropdownMenu = document.getElementById('dropdownMenu');
 
-  if (menuBtn && menuDropdown) {
+  if (menuBtn && dropdownMenu) {
     menuBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
+      dropdownMenu.classList.toggle('show');
     });
 
     document.addEventListener('click', function(e) {
-      if (!menuDropdown.contains(e.target) && e.target !== menuBtn) {
-        menuDropdown.style.display = 'none';
+      if (!dropdownMenu.contains(e.target) && e.target !== menuBtn) {
+        dropdownMenu.classList.remove('show');
+      }
+    });
+
+    // Handle keyboard navigation
+    menuBtn.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        dropdownMenu.classList.toggle('show');
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        dropdownMenu.classList.remove('show');
       }
     });
   }
@@ -23,12 +37,21 @@ document.addEventListener('DOMContentLoaded', function() {
       window.location.href = '/furadoption';
     });
   });
+
+  // Profile button click event
+  const profileBtn = document.getElementById('profileBtn');
+  if (profileBtn) {
+    profileBtn.addEventListener('click', function() {
+      window.location.href = '/myprofile';
+    });
+  }
 });
 // Sign out logic
 document.addEventListener('DOMContentLoaded', function() {
-  const signOut = document.getElementById('signOut');
-  if (signOut) {
-    signOut.addEventListener('click', function() {
+  const signOutBtn = document.getElementById('signOutBtn');
+  if (signOutBtn) {
+    signOutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
       window.location.href = '/';
     });
   }
