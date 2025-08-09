@@ -47,50 +47,63 @@
   padding-bottom: 10px;
 }
 
-/* Dropdown menu styles */
-.dropdown-container {
-    position: relative;
-    display: inline-block;
-}
-.dropdown-menu {
-    background: white;
-    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.10);
-    border-radius: 8px;
-    outline: 0.75px #EBEBEB solid;
-    outline-offset: -0.75px;
-    overflow: hidden;
-    padding: 8px 0;
-}
-.dropdown-item {
-    width: 153px;
-    height: 31px;
-    margin: 8px;
-    border-radius: 5px;
-    position: relative;
-    color: #02522E;
-    font-size: 12px;
-    font-family: Inter, sans-serif;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    padding-left: 10px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.dropdown-item:hover {
-    background: #F0F0F0;
+/* Ensure stable layout and prevent conflicts */
+.top-header * {
+    box-sizing: border-box;
 }
 
-/* Desktop navigation group for top header */
+/* Ensure proper stacking and positioning */
+.top-header {
+    position: relative;
+    z-index: 100;
+}
+
+.dropdown-menu {
+    z-index: 1000;
+}
+
+/* Prevent text selection on buttons */
+.icon-circle,
+.btn-outline,
+.dropdown-item {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Top Header Layout */
+.top-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 70px;
+    padding: 0 20px;
+    background: #fafaf9;
+    border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.logo {
+    height: 45px;
+    width: auto;
+}
+
+/* Desktop navigation group - positioned at the right */
 .desktop-nav-group {
     display: flex;
     align-items: center;
-    gap: 10px;
-    position: absolute;
-    top: 0;
-    right: 15.5rem;
-    height: 100%;
-    padding-right: 20px;
+    gap: 12px;
+    flex-shrink: 0;
+    position: relative;
 }
 
 /* Color Theme */
@@ -157,37 +170,39 @@ body {
 
 }
 
-/* ...existing code... */
+/* Button Styles - Responsive and accessible */
 .btn-outline {
     background: white;
     color: var(--primary-color);
     border: 1.5px solid var(--primary-color);
-    width: auto;
-    min-width: 124px;
-    height: 40px;
-    padding: 10px 15px;
-    border-radius: var(--border-radius);
+    min-width: 120px;
+    height: 42px;
+    padding: 10px 18px;
+    border-radius: 21px;
     cursor: pointer;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-size: 15px;
-    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
     font-weight: 500;
-    transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    text-decoration: none;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 
 .btn-outline:hover {
-    background: rgba(1, 94, 52, 0.25); /* #015E34 at 25% opacity */
-    color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
 }
 
 .icon-circle {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     border: 1.5px solid var(--primary-color);
     background: white;
@@ -195,30 +210,176 @@ body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
-
 
 .icon-circle:hover {
-    background: rgba(1, 94, 52, 0.25); /* #015E34 at 25% opacity */
+    background: var(--primary-color);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.icon-circle:hover .circle-icon,
+.icon-circle:hover .menu-icon {
+    filter: brightness(0) invert(1);
 }
 
 
 
 
+/* Icon styling */
 .circle-icon, .menu-icon {
     width: 20px;
     height: 20px;
     display: block;
+    transition: filter 0.2s ease;
 }
 
-.logo-section {
+/* Dropdown container and menu */
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
     position: absolute;
-    left: 50px;
-    top: -20px;
+    right: 0;
+    top: calc(100% + 8px);
+    background: white;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+    overflow: hidden;
+    padding: 8px 0;
+    min-width: 220px;
+    z-index: 1000;
+    animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    width: calc(100% - 16px);
+    margin: 2px 8px;
+    border-radius: 8px;
+    color: #02522E;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding: 12px 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+.dropdown-item:hover {
+    background: #F3F4F6;
+    color: #014D26;
+}
+
+.dropdown-separator {
+    margin: 8px 12px;
+    border: none;
+    border-top: 1px solid #E5E7EB;
+}
+
+.admin-section-title {
+    font-weight: bold;
+    color: #14532d !important;
+    cursor: default;
+    background: #F8F9FA !important;
+}
+
+.admin-section-title:hover {
+    background: #F8F9FA !important;
+}
+
+/* Responsive Design for Navigation */
+@media (max-width: 768px) {
+    .top-header {
+        padding: 0 15px;
+        min-height: 60px;
+    }
+    
+    .desktop-nav-group {
+        gap: 8px;
+    }
+    
+    .btn-outline {
+        min-width: 100px;
+        font-size: 13px;
+        padding: 8px 14px;
+    }
+    
+    .icon-circle {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .circle-icon, .menu-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .dropdown-menu {
+        min-width: 200px;
+        right: -10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-header {
+        padding: 0 10px;
+    }
+    
+    .desktop-nav-group {
+        gap: 6px;
+    }
+    
+    .btn-outline {
+        min-width: 90px;
+        font-size: 12px;
+        padding: 6px 12px;
+        height: 36px;
+    }
+    
+    .icon-circle {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .circle-icon, .menu-icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* High DPI and Zoom compatibility */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .icon-circle, .btn-outline {
+        border-width: 1px;
+    }
+}
+
+/* Ensure buttons stay accessible at all zoom levels */
+.desktop-nav-group * {
+    pointer-events: auto;
+    touch-action: manipulation;
 }
 
 .logo {
