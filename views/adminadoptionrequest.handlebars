@@ -44,30 +44,65 @@
       <table class="requests-table">
         <thead>
           <tr>
-            <th>ID No.</th>
-            <th>Volunteer Name</th>
-            <th>Action Buttons</th>
+            <th>Application ID</th>
+            <th>Applicant</th>
+            <th>Cat</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>12276458</td>
-            <td>John Doe</td>
-            <td>
-              <button class="btn accept">Accept</button>
-              <button class="btn deny">Deny</button>
-            </td>
-          </tr>
-          <tr>
-            <td>12108562</td>
-            <td>Christian Tiu</td>
-            <td>
-              <button class="btn accept">Accept</button>
-              <button class="btn deny">Deny</button>
-            </td>
-          </tr>
+          {{#if applications}}
+            {{#each applications}}
+            <tr data-id="{{this._id}}">
+              <td>{{this._id}}</td>
+              <td>{{this.user_name}}</td>
+              <td>{{this.cat_name}}</td>
+              <td>{{this.application_date}}</td>
+              <td class="status-cell">{{this.status}}</td>
+              <td>
+                <button class="btn accept" data-action="accept">Accept</button>
+                <button class="btn deny" data-action="deny">Deny</button>
+              </td>
+            </tr>
+            {{/each}}
+          {{else}}
+            <tr><td colspan="6" style="text-align:center;">No applications yet</td></tr>
+          {{/if}}
         </tbody>
       </table>
     </section>
   </main>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.requests-table tbody tr').forEach(function(row){
+    row.addEventListener('click', async function(e){
+      const actionBtn = e.target.closest('button[data-action]');
+      if (!actionBtn) return;
+      const id = row.getAttribute('data-id');
+      const action = actionBtn.getAttribute('data-action');
+      const status = action === 'accept' ? 'Accepted' : 'Denied';
+      try {
+        const res = await fetch(`/adoption/applications/${id}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.message || 'Failed to update status');
+          return;
+        }
+        const statusCell = row.querySelector('.status-cell');
+        if (statusCell) statusCell.textContent = data.application.status;
+      } catch (err) {
+        console.error(err);
+        alert('Network error');
+      }
+    });
+  });
+});
+</script>

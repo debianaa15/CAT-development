@@ -3,6 +3,7 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 
 
+
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/DLSU_PUSA_DB', {
   useNewUrlParser: true,
@@ -35,6 +36,8 @@ app.use(express.static('public'));
 
 // Import User model for MongoDB authentication
 const User = require('./models/user');
+// Adoption applications model (MongoDB)
+const AdoptionApplication = require('./models/adoptionApplication');
 
 
 // --- LOGIN ROUTE FOR AJAX LOGIN ---
@@ -155,9 +158,19 @@ app.get('/furadoption', (req, res) => {
     });
 });
 
-// Admin Adoption Request route
-app.get('/adminadoptionrequest', (req, res) => {
-  res.render('adminadoptionrequest');
+// Admin Adoption Requests routes (singular and plural)
+app.get(['/adminadoptionrequest', '/adminadoptionrequests'], async (req, res) => {
+  try {
+    const user = req.session && req.session.user ? req.session.user : null;
+    if (!user || user.role !== 'Admin') {
+      return res.status(403).send('Forbidden');
+    }
+    const applications = await AdoptionApplication.find().sort({ application_date: -1 }).lean();
+    return res.render('adminadoptionrequest', { user, applications });
+  } catch (err) {
+    console.error('Load admin adoption requests error:', err);
+    return res.status(500).send('Server error');
+  }
 });
 
 // Admin Trainer User List route
@@ -345,6 +358,68 @@ app.delete('/events/:id', (req, res) => {
     }
 });
 
+// Admin: update adoption application status (Accept/Deny)
+app.put('/adoption/applications/:id/status', async (req, res) => {
+  try {
+    const user = req.session && req.session.user ? req.session.user : null;
+    if (!user || user.role !== 'Admin') {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const { id } = req.params;
+    const { status } = req.body || {};
+    if (!['Accepted', 'Denied', 'Pending', 'Scheduled'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+    const updated = await AdoptionApplication.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ message: 'Application not found' });
+    }
+    return res.json({ message: 'Status updated', application: updated });
+  } catch (err) {
+    console.error('Update application status error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Create adoption application (Book Adoption Interview) - MongoDB
+app.post('/adoption/applications', async (req, res) => {
+  try {
+    console.log("📩 Adoption application POST hit!");
+    console.log("📦 Request body:", req.body);
+    console.log("👤 Session user:", req.session.user);
+
+    const user = req.session && req.session.user;
+    if (!user) {
+      console.warn("❌ Unauthorized request - no session");
+      return res.status(401).json({ message: 'Unauthorized. Please sign in.' });
+    }
+
+    const { catName, catId } = req.body || {};
+    if (!catName && !catId) {
+      console.warn("⚠️ Missing cat information");
+      return res.status(400).json({ message: 'Missing cat information.' });
+    }
+
+    const application = new AdoptionApplication({
+      user_id: String(user.id),
+      user_name: user.name,
+      cat_id: catId ? String(catId) : null,
+      cat_name: catName || null,
+      status: 'Pending'
+    });
+
+    await application.save();
+    console.log("✅ Application saved:", application);
+    return res.status(201).json({ message: 'Application submitted.', application });
+  } catch (err) {
+    console.error('💥 Create application error:', err);
+    res.status(500).json({ message: 'Server error. Please try again.' });
+  }
+});
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
