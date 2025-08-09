@@ -112,9 +112,12 @@
                 Nook
                 <span class="slot-card-time">2:00 - 3:00 PM</span>
               </div>
-              <div class="slot-card-body slot-card-body-column">
-                <span class="slot-card-trainer" data-day="{{dayName}}">No trainer assigned</span>
-                <span class="slot-card-volunteer" data-day="{{dayName}}">Waiting for trainer</span>
+              <div class="nook-card-body">
+                <div class="nook-card-status-label" data-day="{{dayName}}" style="color:#2dbe60; font-weight:600; font-size:14px; margin-bottom:6px; text-align:center;">No trainer assigned</div>
+                <div class="nook-card-status-row">
+                  <span class="nook-card-status-dot" data-day="{{dayName}}" style="background:#2dbe60;"></span>
+                  <span class="nook-card-vol-count" data-day="{{dayName}}" style="font-size:12px;color:#6c7a89;margin-left:6px;">0/3 volunteers</span>
+                </div>
               </div>
               <div class="slot-card-flexfill"></div>
               <div class="slot-card-view">
@@ -126,9 +129,12 @@
                 Feeding
                 <span class="slot-card-time">4:00 - 6:00 PM</span>
               </div>
-              <div class="slot-card-body slot-card-body-column">
-                <span class="slot-card-trainer" data-day="{{dayName}}">No trainer assigned</span>
-                <span class="slot-card-volunteer" data-day="{{dayName}}">0/5 reserved</span>
+              <div class="nook-card-body">
+                <div class="feed-card-status-label" data-day="{{dayName}}" style="color:#2dbe60; font-weight:600; font-size:14px; margin-bottom:6px; text-align:center;">No trainer assigned</div>
+                <div class="nook-card-status-row">
+                  <span class="feed-card-status-dot" data-day="{{dayName}}" style="background:#2dbe60;"></span>
+                  <span class="feed-card-vol-count" data-day="{{dayName}}" style="font-size:12px;color:#6c7a89;margin-left:6px;">0/5 volunteers</span>
+                </div>
               </div>
               <div class="slot-card-flexfill"></div>
               <div class="slot-card-view">
@@ -270,7 +276,7 @@ function showNookModal(day) {
     }
   } else if (availableSpots > 0) {
     const hasTrainer = nookData.trainer && nookData.trainer !== 'No trainer assigned';
-    const buttonText = hasTrainer ? 'Join as Volunteer' : 'Reserve as Trainer';
+    const buttonText = 'Reserve as Volunteer';
     buttonHTML = `<button id="reserveNookBtn" class="modal-slot-reserve-btn" onclick="makeNookReservation('${day}')">${buttonText}</button>`;
   } else {
     buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #6c7a89;">Slot Full</button>`;
@@ -347,7 +353,7 @@ function showFeedingModal(day) {
     }
   } else if (availableSpots > 0) {
     const hasTrainer = feedingData.trainer && feedingData.trainer !== 'No trainer assigned';
-    const buttonText = hasTrainer ? 'Join as Volunteer' : 'Reserve as Trainer';
+    const buttonText = 'Reserve as Volunteer';
     buttonHTML = `<button id="reserveBtn" class="modal-slot-reserve-btn" onclick="makeReservation('${day}')">${buttonText}</button>`;
   } else {
     buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #6c7a89;">Slot Full</button>`;
@@ -426,25 +432,16 @@ function cancelReservation(day) {
 function updateSlotDisplay(day) {
   const feedingData = slotData[day].feeding;
   const availableSpots = feedingData.maxVolunteers - feedingData.volunteers.length;
-  
-  // Update feeding card display
   const feedingCard = document.querySelector(`.feeding-card[data-day="${day}"]`);
-  if (feedingCard) {
-    const trainerSpan = feedingCard.querySelector('.slot-card-trainer');
-    const volunteerSpan = feedingCard.querySelector('.slot-card-volunteer');
-    
-    if (feedingData.trainer) {
-      trainerSpan.textContent = feedingData.trainer;
-      volunteerSpan.textContent = `${feedingData.volunteers.length}/${feedingData.maxVolunteers} volunteers`;
-    } else {
-      trainerSpan.textContent = 'No trainer assigned';
-      if (availableSpots > 0) {
-        volunteerSpan.textContent = `${feedingData.volunteers.length}/${feedingData.maxVolunteers} volunteers`;
-      } else {
-        volunteerSpan.textContent = 'Full';
-      }
-    }
-  }
+  if (!feedingCard) return;
+
+  const labelEl = feedingCard.querySelector('.feed-card-status-label');
+  const dotEl = feedingCard.querySelector('.feed-card-status-dot');
+  const countEl = feedingCard.querySelector('.feed-card-vol-count');
+
+  labelEl.textContent = feedingData.trainer ? feedingData.trainer : 'No trainer assigned';
+  dotEl.style.background = availableSpots > 0 ? '#2dbe60' : '#F44336';
+  countEl.textContent = `${feedingData.volunteers.length}/${feedingData.maxVolunteers} volunteers`;
 }
 
 // Helper function to get date for a day abbreviation
@@ -467,6 +464,8 @@ function loadServerData() {
     // Parse server data passed from template
     const feedingSignups = JSON.parse('{{{feedingSignups}}}' || '[]');
     const nookSignups = JSON.parse('{{{nookSignups}}}' || '[]');
+    const feedingTrainers = JSON.parse('{{{feedingTrainers}}}' || '{}');
+    const nookTrainers = JSON.parse('{{{nookTrainers}}}' || '{}');
     
     console.log('Loading server data:', { feedingSignups, nookSignups });
     
@@ -474,10 +473,11 @@ function loadServerData() {
     feedingSignups.forEach(signup => {
       const day = signup.slot_day;
       if (slotData[day] && slotData[day].feeding) {
-        // Set trainer if this signup is marked as trainer
-        if (signup.is_trainer) {
+        // Prefer server-provided trainer mapping
+        if (feedingTrainers[day]) {
+          slotData[day].feeding.trainer = feedingTrainers[day];
+        } else if (signup.is_trainer && !slotData[day].feeding.trainer) {
           slotData[day].feeding.trainer = signup.volunteer_name;
-          console.log(`Set feeding trainer for ${day}: ${signup.volunteer_name}`);
         }
         // Add to volunteers list if not already there
         if (!slotData[day].feeding.volunteers.includes(signup.volunteer_name)) {
@@ -490,10 +490,11 @@ function loadServerData() {
     nookSignups.forEach(signup => {
       const day = signup.slot_day;
       if (slotData[day] && slotData[day].nook) {
-        // Set trainer if this signup is marked as trainer
-        if (signup.is_trainer) {
+        // Prefer server-provided trainer mapping
+        if (nookTrainers[day]) {
+          slotData[day].nook.trainer = nookTrainers[day];
+        } else if (signup.is_trainer && !slotData[day].nook.trainer) {
           slotData[day].nook.trainer = signup.volunteer_name;
-          console.log(`Set nook trainer for ${day}: ${signup.volunteer_name}`);
         }
         // Add to volunteers list if not already there
         if (!slotData[day].nook.volunteers.includes(signup.volunteer_name)) {
@@ -558,25 +559,16 @@ function cancelNookReservation(day) {
 function updateNookDisplay(day) {
   const nookData = slotData[day].nook;
   const availableSpots = nookData.maxVolunteers - nookData.volunteers.length;
-  
-  // Update nook card display
   const nookCard = document.querySelector(`.nook-card[data-day="${day}"]`);
-  if (nookCard) {
-    const trainerSpan = nookCard.querySelector('.slot-card-trainer');
-    const volunteerSpan = nookCard.querySelector('.slot-card-volunteer');
-    
-    if (nookData.trainer) {
-      trainerSpan.textContent = nookData.trainer;
-      volunteerSpan.textContent = `${nookData.volunteers.length}/${nookData.maxVolunteers} volunteers`;
-    } else {
-      trainerSpan.textContent = 'No trainer assigned';
-      if (availableSpots > 0) {
-        volunteerSpan.textContent = `${nookData.volunteers.length}/${nookData.maxVolunteers} volunteers`;
-      } else {
-        volunteerSpan.textContent = 'Full';
-      }
-    }
-  }
+  if (!nookCard) return;
+
+  const labelEl = nookCard.querySelector('.nook-card-status-label');
+  const dotEl = nookCard.querySelector('.nook-card-status-dot');
+  const countEl = nookCard.querySelector('.nook-card-vol-count');
+
+  labelEl.textContent = nookData.trainer ? nookData.trainer : 'No trainer assigned';
+  dotEl.style.background = availableSpots > 0 ? '#2dbe60' : '#F44336';
+  countEl.textContent = `${nookData.volunteers.length}/${nookData.maxVolunteers} volunteers`;
 }
 
 // Helper function to get current week

@@ -1735,6 +1735,12 @@ body {
 
 }
 
+/* Trainer-like card helper styles for volunteer page */
+.nook-card-body { padding: 12px 14px; }
+.nook-card-status-row { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.nook-card-status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.feed-card-status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
 
 /* Sunday signup message */
 .signup-message {

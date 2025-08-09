@@ -236,18 +236,149 @@ app.get(['/adminadoptionrequest', '/adminadoptionrequests'], async (req, res) =>
 });
 
 // Admin Trainer User List route
-app.get('/admin/trainer-users', (req, res) => {
-  res.render('admintraineruserlist');
+app.get('/admin/trainer-users', async (req, res) => {
+  try {
+    const user = req.session && req.session.user ? req.session.user : null;
+    if (!user || user.role !== 'Admin') {
+      return res.status(403).send('Forbidden');
+    }
+    const trainers = await User.find({ user_role: 'Trainer' }).lean();
+    return res.render('admintraineruserlist', { user, trainers });
+  } catch (err) {
+    console.error('Load trainers error:', err);
+    return res.status(500).send('Server error');
+  }
+});
+
+// Admin: change a user's role
+app.put('/admin/users/:id/role', async (req, res) => {
+  try {
+    const currentUser = req.session && req.session.user ? req.session.user : null;
+    if (!currentUser || currentUser.role !== 'Admin') {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const { id } = req.params;
+    const { role } = req.body || {};
+    const allowed = ['Admin', 'Volunteer', 'Trainer'];
+    if (!allowed.includes(role)) {
+      return res.status(400).json({ message: 'Invalid role' });
+    }
+    const updated = await User.findByIdAndUpdate(id, { user_role: role }, { new: true }).lean();
+    if (!updated) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    return res.json({ message: 'Role updated', user: updated });
+  } catch (err) {
+    console.error('Update role error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Admin: remove a user
+app.delete('/admin/users/:id', async (req, res) => {
+  try {
+    const currentUser = req.session && req.session.user ? req.session.user : null;
+    if (!currentUser || currentUser.role !== 'Admin') {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const { id } = req.params;
+    const result = await User.findByIdAndDelete(id).lean();
+    if (!result) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    return res.json({ message: 'User removed' });
+  } catch (err) {
+    console.error('Remove user error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Admin Volunteer User List route
-app.get('/admin/volunteer-users', (req, res) => {
-  res.render('adminvolunteeruserlist'); // Create this file next!
+app.get('/admin/volunteer-users', async (req, res) => {
+  try {
+    const user = req.session && req.session.user ? req.session.user : null;
+    if (!user || user.role !== 'Admin') {
+      return res.status(403).send('Forbidden');
+    }
+    const volunteers = await User.find({ user_role: 'Volunteer' }).lean();
+    return res.render('adminvolunteeruserlist', { user, volunteers });
+  } catch (err) {
+    console.error('Load volunteers error:', err);
+    return res.status(500).send('Server error');
+  }
 });
 
 // Admin Cats List route
-app.get('/admin/cats', (req, res) => {
-  res.render('admincatslist'); // Create this file next!
+const Cat = require('./models/cat');
+app.get('/admin/cats', async (req, res) => {
+  try {
+    const user = req.session && req.session.user ? req.session.user : null;
+    if (!user || user.role !== 'Admin') {
+      return res.status(403).send('Forbidden');
+    }
+    const cats = await Cat.find().lean();
+    return res.render('admincatslist', { user, cats });
+  } catch (err) {
+    console.error('Load cats error:', err);
+    return res.status(500).send('Server error');
+  }
+});
+
+// Admin: add a new cat
+app.post('/admin/cats', async (req, res) => {
+  try {
+    const user = req.session && req.session.user ? req.session.user : null;
+    if (!user || user.role !== 'Admin') {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const { cat_name, adoption_status, cat_description } = req.body || {};
+    if (!cat_name) return res.status(400).json({ message: 'cat_name is required' });
+    const cat = new Cat({ cat_name, adoption_status, cat_description });
+    await cat.save();
+    res.status(201).json({ message: 'Cat added', cat });
+  } catch (err) {
+    console.error('Add cat error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Admin: delete a cat
+app.delete('/admin/cats/:id', async (req, res) => {
+  try {
+    const user = req.session && req.session.user ? req.session.user : null;
+    if (!user || user.role !== 'Admin') {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const { id } = req.params;
+    const result = await Cat.findByIdAndDelete(id).lean();
+    if (!result) return res.status(404).json({ message: 'Cat not found' });
+    res.json({ message: 'Cat removed' });
+  } catch (err) {
+    console.error('Delete cat error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Admin: update a cat
+app.put('/admin/cats/:id', async (req, res) => {
+  try {
+    const user = req.session && req.session.user ? req.session.user : null;
+    if (!user || user.role !== 'Admin') {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const { id } = req.params;
+    const { cat_name, adoption_status, cat_description } = req.body || {};
+    const updated = await Cat.findByIdAndUpdate(
+      id,
+      { cat_name, adoption_status, cat_description },
+      { new: true }
+    ).lean();
+    if (!updated) return res.status(404).json({ message: 'Cat not found' });
+    res.json({ message: 'Cat updated', cat: updated });
+  } catch (err) {
+    console.error('Update cat error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Helper function to generate week data
@@ -364,6 +495,53 @@ app.get('/main', async (req, res) => {
     const feedingSignups = await getSlotSignups('feeding');
     const nookSignups = await getSlotSignups('nook');
 
+    // Compute trainer display based on Trainer users who reserved
+    const allVolunteerIds = [
+      ...new Set([
+        ...feedingSignups.map(s => s.volunteer_id),
+        ...nookSignups.map(s => s.volunteer_id)
+      ])
+    ].filter(Boolean);
+
+    let idToUser = {};
+    if (allVolunteerIds.length > 0) {
+      try {
+        const objectIds = allVolunteerIds
+          .filter(id => typeof id === 'string' && id.length >= 12)
+          .map(id => {
+            try { return new mongoose.Types.ObjectId(id); } catch (_) { return null; }
+          })
+          .filter(Boolean);
+        if (objectIds.length > 0) {
+          const users = await User.find({ _id: { $in: objectIds } }).lean();
+          users.forEach(u => { idToUser[String(u._id)] = u; });
+        }
+      } catch (e) {
+        console.warn('Could not map signup volunteer_ids to users', e);
+      }
+    }
+
+    const feedingTrainerByDay = {};
+    const nookTrainerByDay = {};
+
+    // Determine trainer by day: prefer explicit is_trainer flag, otherwise a user with Trainer role
+    feedingSignups.forEach(s => {
+      if (!s || !s.slot_day) return;
+      const userForSignup = idToUser[s.volunteer_id];
+      const isTrainerSignup = Boolean(s.is_trainer) || (userForSignup && userForSignup.user_role === 'Trainer');
+      if (isTrainerSignup && !feedingTrainerByDay[s.slot_day]) {
+        feedingTrainerByDay[s.slot_day] = userForSignup ? userForSignup.user_name : s.volunteer_name;
+      }
+    });
+    nookSignups.forEach(s => {
+      if (!s || !s.slot_day) return;
+      const userForSignup = idToUser[s.volunteer_id];
+      const isTrainerSignup = Boolean(s.is_trainer) || (userForSignup && userForSignup.user_role === 'Trainer');
+      if (isTrainerSignup && !nookTrainerByDay[s.slot_day]) {
+        nookTrainerByDay[s.slot_day] = userForSignup ? userForSignup.user_name : s.volunteer_name;
+      }
+    });
+
     // Handle slot reservation requests
     if (req.query.action && user && user.id) {
         const { action, type, day, date } = req.query;
@@ -398,11 +576,12 @@ app.get('/main', async (req, res) => {
                 volunteer_name: user.name,
                 slot_date: date,
                 slot_day: day,
-                is_trainer: !hasTrainer // First person becomes trainer
+                // Only mark as trainer when an authenticated Trainer reserves and there is no trainer yet
+                is_trainer: user.role === 'Trainer' && !hasTrainer
             };
             
             if (await addSlotSignup(slotType, newSignup)) {
-                const message = !hasTrainer ? 'reserved_as_trainer' : 'reserved';
+                const message = newSignup.is_trainer ? 'reserved_as_trainer' : 'reserved';
                 return res.redirect(`/main?week=${weekDate.format('YYYY-MM-DD')}&success=${message}`);
             } else {
                 return res.redirect(`/main?week=${weekDate.format('YYYY-MM-DD')}&error=server_error`);
@@ -429,6 +608,8 @@ app.get('/main', async (req, res) => {
         user,
         feedingSignups: JSON.stringify(feedingSignups),
         nookSignups: JSON.stringify(nookSignups),
+        feedingTrainers: JSON.stringify(feedingTrainerByDay),
+        nookTrainers: JSON.stringify(nookTrainerByDay),
         message: req.query.success || req.query.error
     });
   } catch (err) {

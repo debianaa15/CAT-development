@@ -42,36 +42,76 @@
       <table class="requests-table">
         <thead>
           <tr>
-            <th>ID No.</th>
+            <th>User ID</th>
             <th>Volunteer Name</th>
-            <th>Role</th>
-            <th>Change Role To Trainer?</th>
+            <th>Current Role</th>
+            <th>Change Role To</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>12276458</td>
-            <td>John Doe</td>
-            <td>Trainer</td>
-            <td>
-              <button class="btn accept">Change</button>
-            </td>
-            <td>
-              <button class="btn deny">Remove</button>
-            </td>
-          </tr>
-          <tr>
-            <td>12108562</td>
-            <td>Christian Tiu</td>
-            <td>Trainer</td>
-            <td>
-              <button class="btn accept">Change</button>
-            </td>
-            <td>
-              <button class="btn deny">Remove</button>
-            </td>
-          </tr>
+          {{#if volunteers}}
+            {{#each volunteers}}
+            <tr data-id="{{this._id}}">
+              <td>{{this._id}}</td>
+              <td>{{this.user_name}}</td>
+              <td class="role-cell">{{this.user_role}}</td>
+              <td>
+                <select class="role-select">
+                  <option value="">Change Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Trainer">Trainer</option>
+                  <option value="Volunteer">Volunteer</option>
+                </select>
+              </td>
+              <td>
+                <button class="btn deny" data-action="remove">Remove</button>
+                <button class="btn accept" data-action="change-role">Apply</button>
+              </td>
+            </tr>
+            {{/each}}
+          {{else}}
+            <tr><td colspan="5" style="text-align:center;">No volunteers found</td></tr>
+          {{/if}}
         </tbody>
       </table>
     </section>
+  </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.requests-table tbody tr').forEach(function(row){
+    row.addEventListener('click', async function(e){
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const userId = row.getAttribute('data-id');
+      const action = btn.getAttribute('data-action');
+      if (action === 'remove') {
+        if (!confirm('Are you sure you want to remove this user?')) return;
+        try {
+          const res = await fetch(`/admin/users/${userId}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (!res.ok) { alert(data.message || 'Failed to remove'); return; }
+          row.remove();
+        } catch (err) { console.error(err); alert('Network error'); }
+      } else if (action === 'change-role') {
+        const select = row.querySelector('.role-select');
+        const newRole = select && select.value;
+        if (!newRole) { alert('Please select a role'); return; }
+        try {
+          const res = await fetch(`/admin/users/${userId}/role`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role: newRole })
+          });
+          const data = await res.json();
+          if (!res.ok) { alert(data.message || 'Failed to update role'); return; }
+          const roleCell = row.querySelector('.role-cell');
+          if (roleCell) roleCell.textContent = data.user.user_role;
+        } catch (err) { console.error(err); alert('Network error'); }
+      }
+    });
+  });
+});
+</script>

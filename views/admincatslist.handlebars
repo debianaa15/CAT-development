@@ -39,29 +39,115 @@
         <img src="/img/search.png" alt="Search" class="search-icon" />
         <input type="text" placeholder="Search by Cats Name" />
       </div>
+      <div style="margin-bottom:16px; display:flex; gap:8px; align-items:center;">
+        <input id="newCatName" type="text" placeholder="New cat name" style="padding:8px; flex:1;" />
+        <input id="newCatDesc" type="text" placeholder="Description" style="padding:8px; flex:2;" />
+        <select id="newCatStatus" style="padding:8px;">
+          <option value="Available">Available</option>
+          <option value="Pending">Pending</option>
+          <option value="Adopted">Adopted</option>
+        </select>
+        <button id="addCatBtn" class="btn accept">Add Cat</button>
+      </div>
+
       <table class="requests-table">
         <thead>
           <tr>
+            <th>Cat ID</th>
             <th>Cat Name</th>
-            <th>Action Buttons</th>
+            <th>Status</th>
+            <th>Description</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Jackpot</td>
-            <td>
-              <button class="btn accept">Add</button>
-              <button class="btn deny">Remove</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Dweety</td>
-            <td>
-              <button class="btn accept">Add</button>
-              <button class="btn deny">Remove</button>
-            </td>
-          </tr>
+          {{#if cats}}
+            {{#each cats}}
+            <tr data-id="{{this._id}}">
+              <td>{{this._id}}</td>
+              <td><input class="cat-name" value="{{this.cat_name}}"/></td>
+              <td>
+                <select class="cat-status">
+                  <option value="Available" {{#if (eq this.adoption_status 'Available')}}selected{{/if}}>Available</option>
+                  <option value="Pending" {{#if (eq this.adoption_status 'Pending')}}selected{{/if}}>Pending</option>
+                  <option value="Adopted" {{#if (eq this.adoption_status 'Adopted')}}selected{{/if}}>Adopted</option>
+                </select>
+              </td>
+              <td>
+                <input class="cat-desc" value="{{this.cat_description}}"/>
+              </td>
+              <td>
+                <button class="btn accept" data-action="save">Save</button>
+                <button class="btn deny" data-action="remove">Remove</button>
+              </td>
+            </tr>
+            {{/each}}
+          {{else}}
+            <tr><td colspan="5" style="text-align:center;">No cats found</td></tr>
+          {{/if}}
         </tbody>
       </table>
     </section>
   </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const addBtn = document.getElementById('addCatBtn');
+  if (addBtn) {
+    addBtn.addEventListener('click', async function(){
+      const name = document.getElementById('newCatName').value.trim();
+      const desc = document.getElementById('newCatDesc').value.trim();
+      const status = document.getElementById('newCatStatus').value;
+      if (!name) { alert('Please enter a cat name'); return; }
+      try {
+        const res = await fetch('/admin/cats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cat_name: name, cat_description: desc, adoption_status: status })
+        });
+        const data = await res.json();
+        if (!res.ok) { alert(data.message || 'Failed to add cat'); return; }
+        location.reload();
+      } catch (err) { console.error(err); alert('Network error'); }
+    });
+  }
+
+  document.querySelectorAll('.requests-table tbody tr').forEach(function(row){
+    row.addEventListener('click', async function(e){
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const catId = row.getAttribute('data-id');
+      const action = btn.getAttribute('data-action');
+      if (action === 'remove') {
+        if (!confirm('Remove this cat?')) return;
+        try {
+          const res = await fetch(`/admin/cats/${catId}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (!res.ok) { alert(data.message || 'Failed to remove'); return; }
+          row.remove();
+        } catch (err) { console.error(err); alert('Network error'); }
+      } else if (action === 'save') {
+        const nameEl = row.querySelector('.cat-name');
+        const statusEl = row.querySelector('.cat-status');
+        const descEl = row.querySelector('.cat-desc');
+        const payload = {
+          cat_name: nameEl ? nameEl.value.trim() : undefined,
+          adoption_status: statusEl ? statusEl.value : undefined,
+          cat_description: descEl ? descEl.value.trim() : undefined,
+        };
+        try {
+          const res = await fetch(`/admin/cats/${catId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (!res.ok) { alert(data.message || 'Failed to save'); return; }
+          alert('Saved');
+        } catch (err) { console.error(err); alert('Network error'); }
+      }
+    });
+  });
+});
+</script>
