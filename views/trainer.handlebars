@@ -269,6 +269,29 @@ function getPrevWeek(weekStr) {
   return d.toISOString().slice(0, 10);
 }
 
+// Helper function to get date for a day abbreviation
+function getDateForDay(dayAbbr) {
+  // Find the matching weekDay from the server data
+  const weekDays = [
+    {{#each weekDays}}
+    {
+      dayName: '{{dayName}}',
+      dateString: '{{dateString}}'
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+  ];
+  
+  const matchingDay = weekDays.find(day => day.dayName === dayAbbr);
+  
+  if (matchingDay) {
+    return matchingDay.dateString;
+  }
+  
+  // Fallback to current week calculation
+  const currentWeek = '{{currentWeek}}';
+  return currentWeek;
+}
+
 // Enhanced slot state management
 let nookSlotState = {};
 let feedingSlotState = {};
@@ -293,6 +316,65 @@ weekDays.forEach(day => {
     maxVolunteers: 5
   };
 });
+
+// Load existing server data
+loadTrainerData();
+
+function loadTrainerData() {
+  try {
+    // Parse server data passed from template
+    const feedingSignups = JSON.parse('{{{feedingSignups}}}' || '[]');
+    const nookSignups = JSON.parse('{{{nookSignups}}}' || '[]');
+    const currentUser = '{{user.name}}';
+    
+    console.log('Loading trainer data:', { feedingSignups, nookSignups, currentUser });
+    
+    // Process feeding slots
+    weekDays.forEach(day => {
+      const dayFeedingSignups = feedingSignups.filter(signup => signup.slot_day === day);
+      feedingSlotState[day].volunteers = dayFeedingSignups.map(s => s.volunteer_name);
+      
+      // Check if current user is trainer for this day
+      const userTrainerSignup = dayFeedingSignups.find(signup => 
+        signup.is_trainer && signup.volunteer_name === currentUser
+      );
+      
+      if (userTrainerSignup) {
+        feedingSlotState[day].assigned = true;
+        feedingSlotState[day].trainer = userTrainerSignup.volunteer_name;
+        feedingSlotState[day].trainerOnly = userTrainerSignup.trainer_only || false;
+        feedingSlotState[day].allowVolunteers = !userTrainerSignup.trainer_only;
+      }
+    });
+    
+    // Process nook slots  
+    weekDays.forEach(day => {
+      const dayNookSignups = nookSignups.filter(signup => signup.slot_day === day);
+      
+      // Check if current user is trainer for this day
+      const userTrainerSignup = dayNookSignups.find(signup => 
+        signup.is_trainer && signup.volunteer_name === currentUser
+      );
+      
+      if (userTrainerSignup) {
+        nookSlotState[day].assigned = true;
+        nookSlotState[day].trainer = userTrainerSignup.volunteer_name;
+        nookSlotState[day].trainerOnly = userTrainerSignup.trainer_only || false;
+        nookSlotState[day].allowVolunteers = !userTrainerSignup.trainer_only;
+      }
+    });
+    
+    // Update UI displays
+    weekDays.forEach(day => {
+      updateNookCardDisplay(day);
+      updateFeedingCardDisplay(day);
+    });
+    
+    console.log('Final slot states:', { nookSlotState, feedingSlotState });
+  } catch (error) {
+    console.error('Error loading trainer data:', error);
+  }
+}
 
 function openFeedingSlotModal(event) {
   var modal = document.getElementById('feedingSlotModal');
@@ -353,102 +435,207 @@ function openNookSlotModal(event) {
 }
 
 function takeNookSlot() {
-  if (!currentNookDay) return;
+  console.log('takeNookSlot called');
+  console.log('currentNookDay:', currentNookDay);
+  
+  if (!currentNookDay) {
+    console.error('No currentNookDay set');
+    return;
+  }
   
   const selectedOption = document.querySelector('input[name="nookSlotType"]:checked');
-  if (!selectedOption) return;
+  if (!selectedOption) {
+    console.error('No nookSlotType selected');
+    return;
+  }
   
   const isTrainerOnly = selectedOption.value === 'justYou';
-  const dayState = nookSlotState[currentNookDay];
   
-  // Update state
-  dayState.assigned = true;
-  dayState.trainer = '{{user.name}}'; // Use actual trainer name
-  dayState.trainerOnly = isTrainerOnly;
-  dayState.allowVolunteers = !isTrainerOnly;
+  // Get the current week and date
+  const currentWeek = '{{currentWeek}}';
+  const date = getDateForDay(currentNookDay);
   
-  // Update card display
-  updateNookCardDisplay(currentNookDay);
+  console.log('Sending request with:', {
+    action: 'reserve',
+    type: 'nook',
+    day: currentNookDay,
+    date: date,
+    trainer_only: isTrainerOnly,
+    currentWeek: currentWeek
+  });
   
-  // Update modal content
-  updateNookClaimedContent();
+  // Create JSON payload
+  const payload = {
+    action: 'reserve',
+    type: 'nook',
+    day: currentNookDay,
+    date: date,
+    trainer_only: isTrainerOnly
+  };
   
-  // Switch to claimed view
-  document.getElementById('nookModalContent').style.display = 'none';
-  document.getElementById('nookModalClaimedContent').style.display = 'block';
-  
-  alert('Nook slot assigned successfully!');
+  // Make POST request to trainer route
+  fetch(`/trainer?week=${currentWeek}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    console.log('Response received:', response);
+    if (response.redirected) {
+      console.log('Redirecting to:', response.url);
+      window.location.href = response.url;
+    } else {
+      console.log('No redirect, response status:', response.status);
+      return response.text();
+    }
+  })
+  .then(data => {
+    if (data) {
+      console.log('Response data:', data);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error assigning nook slot. Please try again.');
+  });
 }
 
 function takeSlot() {
-  if (!currentFeedingDay) return;
+  console.log('takeSlot called');
+  console.log('currentFeedingDay:', currentFeedingDay);
+  
+  if (!currentFeedingDay) {
+    console.error('No currentFeedingDay set');
+    return;
+  }
   
   const selectedOption = document.querySelector('input[name="feedingSlotType"]:checked');
-  if (!selectedOption) return;
+  if (!selectedOption) {
+    console.error('No feedingSlotType selected');
+    return;
+  }
   
   const isTrainerOnly = selectedOption.value === 'justYou';
-  const dayState = feedingSlotState[currentFeedingDay];
   
-  // Update state
-  dayState.assigned = true;
-  dayState.trainer = '{{user.name}}'; // Use actual trainer name
-  dayState.trainerOnly = isTrainerOnly;
-  dayState.allowVolunteers = !isTrainerOnly;
+  // Get the current week and date
+  const currentWeek = '{{currentWeek}}';
+  const date = getDateForDay(currentFeedingDay);
   
-  // Update card display
-  updateFeedingCardDisplay(currentFeedingDay);
+  console.log('Sending request with:', {
+    action: 'reserve',
+    type: 'feeding',
+    day: currentFeedingDay,
+    date: date,
+    trainer_only: isTrainerOnly,
+    currentWeek: currentWeek
+  });
   
-  // Update modal content
-  updateFeedingClaimedContent();
+  // Create JSON payload
+  const payload = {
+    action: 'reserve',
+    type: 'feeding',
+    day: currentFeedingDay,
+    date: date,
+    trainer_only: isTrainerOnly
+  };
   
-  // Switch to claimed view
-  document.getElementById('feedingModalContent').style.display = 'none';
-  document.getElementById('feedingModalClaimedContent').style.display = 'block';
-  
-  alert('Feeding slot assigned successfully!');
+  // Make POST request to trainer route
+  fetch(`/trainer?week=${currentWeek}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    console.log('Response received:', response);
+    if (response.redirected) {
+      console.log('Redirecting to:', response.url);
+      window.location.href = response.url;
+    } else {
+      console.log('No redirect, response status:', response.status);
+      return response.text();
+    }
+  })
+  .then(data => {
+    if (data) {
+      console.log('Response data:', data);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error assigning feeding slot. Please try again.');
+  });
 }
 
 function cancelNookSlot() {
   if (!currentNookDay) return;
   
-  const dayState = nookSlotState[currentNookDay];
+  // Get the current week and date
+  const currentWeek = '{{currentWeek}}';
+  const date = getDateForDay(currentNookDay);
   
-  // Reset state
-  dayState.assigned = false;
-  dayState.trainer = null;
-  dayState.trainerOnly = false;
-  dayState.allowVolunteers = false;
+  // Create JSON payload
+  const payload = {
+    action: 'cancel',
+    type: 'nook',
+    day: currentNookDay,
+    date: date
+  };
   
-  // Update card display
-  updateNookCardDisplay(currentNookDay);
-  
-  // Switch to assignment view
-  document.getElementById('nookModalContent').style.display = 'block';
-  document.getElementById('nookModalClaimedContent').style.display = 'none';
-  
-  alert('Nook slot cancelled successfully!');
+  // Make POST request to trainer route
+  fetch(`/trainer?week=${currentWeek}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    if (response.redirected) {
+      window.location.href = response.url;
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error cancelling nook slot. Please try again.');
+  });
 }
 
 function cancelFeedingSlot() {
   if (!currentFeedingDay) return;
   
-  const dayState = feedingSlotState[currentFeedingDay];
+  // Get the current week and date
+  const currentWeek = '{{currentWeek}}';
+  const date = getDateForDay(currentFeedingDay);
   
-  // Reset state
-  dayState.assigned = false;
-  dayState.trainer = null;
-  dayState.trainerOnly = false;
-  dayState.allowVolunteers = false;
-  dayState.volunteers = [];
+  // Create JSON payload
+  const payload = {
+    action: 'cancel',
+    type: 'feeding',
+    day: currentFeedingDay,
+    date: date
+  };
   
-  // Update card display
-  updateFeedingCardDisplay(currentFeedingDay);
-  
-  // Switch to assignment view
-  document.getElementById('feedingModalContent').style.display = 'block';
-  document.getElementById('feedingModalClaimedContent').style.display = 'none';
-  
-  alert('Feeding slot cancelled successfully!');
+  // Make POST request to trainer route
+  fetch(`/trainer?week=${currentWeek}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    if (response.redirected) {
+      window.location.href = response.url;
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error cancelling feeding slot. Please try again.');
+  });
 }
 
 function updateNookCardDisplay(day) {
@@ -463,14 +650,29 @@ function updateNookCardDisplay(day) {
         nookLabel.style.color = '#ffd600';
         nookDot.style.background = '#ffd600';
       } else {
-        nookLabel.textContent = 'Open to Volunteers - You assigned';
+        // Count volunteers for this nook slot from server data
+        const nookSignups = JSON.parse('{{{nookSignups}}}' || '[]');
+        const daySignups = nookSignups.filter(signup => signup.slot_day === day);
+        const volunteerCount = daySignups.length;
+        
+        nookLabel.textContent = `Open to Volunteers - You + ${volunteerCount - 1} volunteers`;
         nookLabel.style.color = '#2dbe60';
         nookDot.style.background = '#2dbe60';
       }
     } else {
-      nookLabel.textContent = 'Available to Assign';
-      nookLabel.style.color = '#2dbe60';
-      nookDot.style.background = '#2dbe60';
+      // Check if there are volunteers but no trainer assigned
+      const nookSignups = JSON.parse('{{{nookSignups}}}' || '[]');
+      const daySignups = nookSignups.filter(signup => signup.slot_day === day && !signup.is_trainer);
+      
+      if (daySignups.length > 0) {
+        nookLabel.textContent = `${daySignups.length} volunteers signed up - Available to lead`;
+        nookLabel.style.color = '#FF8C00';
+        nookDot.style.background = '#FF8C00';
+      } else {
+        nookLabel.textContent = 'Available to Assign';
+        nookLabel.style.color = '#2dbe60';
+        nookDot.style.background = '#2dbe60';
+      }
     }
   }
 }
@@ -482,6 +684,7 @@ function updateFeedingCardDisplay(day) {
   
   if (statusText && statusDot) {
     if (dayState.assigned) {
+      const volunteerCount = dayState.volunteers.length;
       if (dayState.trainerOnly) {
         statusText.textContent = 'Trainer Only - You assigned';
         statusText.style.color = '#ffd600';
@@ -489,16 +692,24 @@ function updateFeedingCardDisplay(day) {
         statusDot.classList.remove('available');
         statusDot.classList.add('full');
       } else {
-        statusText.textContent = 'Open to Volunteers - You assigned';
+        statusText.textContent = `Open to Volunteers - You + ${volunteerCount - 1} volunteers`;
         statusText.style.color = '#2dbe60';
         statusDot.style.background = '#2dbe60';
         statusDot.classList.remove('available');
         statusDot.classList.add('full');
       }
     } else {
-      statusText.textContent = 'Available to Assign';
-      statusText.style.color = '#2dbe60';
-      statusDot.style.background = '#2dbe60';
+      // Check if there are volunteers but no trainer assigned
+      const volunteerCount = dayState.volunteers.length;
+      if (volunteerCount > 0) {
+        statusText.textContent = `${volunteerCount} volunteers signed up - Available to lead`;
+        statusText.style.color = '#FF8C00';
+        statusDot.style.background = '#FF8C00';
+      } else {
+        statusText.textContent = 'Available to Assign';
+        statusText.style.color = '#2dbe60';
+        statusDot.style.background = '#2dbe60';
+      }
       statusDot.classList.remove('full');
       statusDot.classList.add('available');
     }

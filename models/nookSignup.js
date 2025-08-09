@@ -25,6 +25,10 @@ const nookSignupSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  trainer_only: {
+    type: Boolean,
+    default: false
+  },
   signed_up_at: {
     type: Date,
     default: Date.now

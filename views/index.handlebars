@@ -184,13 +184,15 @@ document.addEventListener('DOMContentLoaded', function() {
         trainer: null,
         volunteers: [],
         maxVolunteers: 3,
-        status: 'available'
+        status: 'available',
+        trainer_only: false
       },
       feeding: {
         trainer: null,
         volunteers: [],
         maxVolunteers: 5,
-        status: 'available'
+        status: 'available',
+        trainer_only: false
       }
     };
   });
@@ -243,10 +245,17 @@ function showNookModal(day) {
   const currentUser = '{{user.name}}';
   const isUserReserved = nookData.volunteers.includes(currentUser);
   const availableSpots = nookData.maxVolunteers - nookData.volunteers.length;
+  const isTrainerOnly = nookData.trainer_only;
   
   let trainerInfo = nookData.trainer || 'No trainer assigned';
   let statusText = availableSpots > 0 ? 'Available' : 'Full';
   let statusColor = availableSpots > 0 ? '#2dbe60' : '#F44336';
+  
+  // Update status for trainer-only slots
+  if (isTrainerOnly) {
+    statusText = 'Trainer Only';
+    statusColor = '#FF8C00';
+  }
   
   // Generate volunteer list HTML
   let volunteersHTML = '';
@@ -274,6 +283,9 @@ function showNookModal(day) {
         <button id="cancelNookBtn" class="modal-slot-cancel-btn" onclick="cancelNookReservation('${day}')">Cancel Reservation</button>
       `;
     }
+  } else if (isTrainerOnly) {
+    // Trainer-only slot - volunteers cannot sign up
+    buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #FF8C00;">Trainer Only Session</button>`;
   } else if (availableSpots > 0) {
     const hasTrainer = nookData.trainer && nookData.trainer !== 'No trainer assigned';
     const buttonText = 'Reserve as Volunteer';
@@ -281,6 +293,9 @@ function showNookModal(day) {
   } else {
     buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #6c7a89;">Slot Full</button>`;
   }
+  
+  // Determine slot role text
+  const slotRoleText = isTrainerOnly ? 'Trainer Only Session' : 'Open to volunteers';
   
   modalBody.innerHTML = `
     <div class="modal-slot-card">
@@ -298,10 +313,10 @@ function showNookModal(day) {
             <div class="modal-slot-status-text" style="color: ${statusColor};">${statusText}</div>
           </div>
         </div>
-        <div class="modal-slot-role">Open to volunteers</div>
+        <div class="modal-slot-role" style="color: ${isTrainerOnly ? '#FF8C00' : 'inherit'};">${slotRoleText}</div>
         <div class="modal-slot-row modal-slot-row-volunteers">
           <div class="modal-slot-vol-label">Registered Volunteers:</div>
-          <div class="modal-slot-vol-count">${nookData.volunteers.length}/${nookData.maxVolunteers} reserved</div>
+          <div class="modal-slot-vol-count">${nookData.volunteers.length}/${isTrainerOnly ? '1 (Trainer Only)' : nookData.maxVolunteers} reserved</div>
         </div>
         <div class="modal-slot-volunteers">
           ${volunteersHTML}
@@ -320,10 +335,17 @@ function showFeedingModal(day) {
   const currentUser = '{{user.name}}';
   const isUserReserved = feedingData.volunteers.includes(currentUser);
   const availableSpots = feedingData.maxVolunteers - feedingData.volunteers.length;
+  const isTrainerOnly = feedingData.trainer_only;
   
   let trainerInfo = feedingData.trainer || 'No trainer assigned';
   let statusText = availableSpots > 0 ? 'Available' : 'Full';
   let statusColor = availableSpots > 0 ? '#2dbe60' : '#F44336';
+  
+  // Update status for trainer-only slots
+  if (isTrainerOnly) {
+    statusText = 'Trainer Only';
+    statusColor = '#FF8C00';
+  }
   
   // Generate volunteer list HTML
   let volunteersHTML = '';
@@ -351,6 +373,9 @@ function showFeedingModal(day) {
         <button id="cancelBtn" class="modal-slot-cancel-btn" onclick="cancelReservation('${day}')">Cancel Reservation</button>
       `;
     }
+  } else if (isTrainerOnly) {
+    // Trainer-only slot - volunteers cannot sign up
+    buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #FF8C00;">Trainer Only Session</button>`;
   } else if (availableSpots > 0) {
     const hasTrainer = feedingData.trainer && feedingData.trainer !== 'No trainer assigned';
     const buttonText = 'Reserve as Volunteer';
@@ -358,6 +383,9 @@ function showFeedingModal(day) {
   } else {
     buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #6c7a89;">Slot Full</button>`;
   }
+  
+  // Determine slot role text
+  const slotRoleText = isTrainerOnly ? 'Trainer Only Session' : 'Open to volunteers';
   
   modalBody.innerHTML = `
     <div class="modal-slot-card">
@@ -375,10 +403,10 @@ function showFeedingModal(day) {
             <div class="modal-slot-status-text" style="color: ${statusColor};">${statusText}</div>
           </div>
         </div>
-        <div class="modal-slot-role">Open to volunteers</div>
+        <div class="modal-slot-role" style="color: ${isTrainerOnly ? '#FF8C00' : 'inherit'};">${slotRoleText}</div>
         <div class="modal-slot-row modal-slot-row-volunteers">
           <div class="modal-slot-vol-label">Registered Volunteers:</div>
-          <div class="modal-slot-vol-count">${feedingData.volunteers.length}/${feedingData.maxVolunteers} reserved</div>
+          <div class="modal-slot-vol-count">${feedingData.volunteers.length}/${isTrainerOnly ? '1 (Trainer Only)' : feedingData.maxVolunteers} reserved</div>
         </div>
         <div class="modal-slot-volunteers">
           ${volunteersHTML}
@@ -473,6 +501,11 @@ function loadServerData() {
     feedingSignups.forEach(signup => {
       const day = signup.slot_day;
       if (slotData[day] && slotData[day].feeding) {
+        // Check if this is a trainer-only slot
+        if (signup.trainer_only) {
+          slotData[day].feeding.trainer_only = true;
+        }
+        
         // Prefer server-provided trainer mapping
         if (feedingTrainers[day]) {
           slotData[day].feeding.trainer = feedingTrainers[day];
@@ -490,6 +523,11 @@ function loadServerData() {
     nookSignups.forEach(signup => {
       const day = signup.slot_day;
       if (slotData[day] && slotData[day].nook) {
+        // Check if this is a trainer-only slot
+        if (signup.trainer_only) {
+          slotData[day].nook.trainer_only = true;
+        }
+        
         // Prefer server-provided trainer mapping
         if (nookTrainers[day]) {
           slotData[day].nook.trainer = nookTrainers[day];
