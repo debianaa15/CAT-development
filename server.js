@@ -56,7 +56,8 @@ app.post('/login', async (req, res) => {
     req.session.user = {
       id: user._id,
       name: user.user_name,
-      role: user.user_role
+      role: user.user_role,
+      email: user.email
     };
     
     // Success: return user_role for differentiation
@@ -260,7 +261,7 @@ app.get('/about', (req, res) => {
 app.get('/myprofile', (req, res) => {
     const user = req.session && req.session.user
         ? req.session.user
-        : { user_name: 'Guest' };
+        : { name: 'Guest', email: '', role: '' };
     res.render('myprofile', {
       user
     });
