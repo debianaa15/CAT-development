@@ -5,10 +5,7 @@ const mongoose = require('mongoose');
 
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/DLSU_PUSA_DB', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect('mongodb://localhost:27017/DLSU_PUSA_DB')
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
@@ -18,8 +15,70 @@ const { engine } = require('express-handlebars');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
+
+// MongoDB slot management functions
+async function getSlotSignups(slotType) {
+  try {
+    const Model = slotType === 'feeding' ? FeedingSignup : NookSignup;
+    const signups = await Model.find().lean();
+    return signups;
+  } catch (err) {
+    console.error('Error getting signups:', err);
+    return [];
+  }
+}
+
+async function addSlotSignup(slotType, signup) {
+  try {
+    const Model = slotType === 'feeding' ? FeedingSignup : NookSignup;
+    const newSignup = new Model(signup);
+    await newSignup.save();
+    return true;
+  } catch (err) {
+    console.error('Error adding signup:', err);
+    return false;
+  }
+}
+
+async function removeSlotSignup(slotType, userId, date) {
+  try {
+    const Model = slotType === 'feeding' ? FeedingSignup : NookSignup;
+    
+    // Check if the user being removed is a trainer
+    const userSignup = await Model.findOne({
+      volunteer_id: userId,
+      slot_date: date
+    });
+    
+    const wasTrainer = userSignup && userSignup.is_trainer;
+    
+    // Remove the user's signup
+    const result = await Model.deleteOne({
+      volunteer_id: userId,
+      slot_date: date
+    });
+    
+    // If a trainer was removed and there are still volunteers, promote the first one to trainer
+    if (wasTrainer && result.deletedCount > 0) {
+      const remainingSignups = await Model.find({ slot_date: date });
+      if (remainingSignups.length > 0) {
+        // Promote the first remaining volunteer to trainer
+        await Model.updateOne(
+          { _id: remainingSignups[0]._id },
+          { is_trainer: true }
+        );
+      }
+    }
+    
+    return result.deletedCount > 0;
+  } catch (err) {
+    console.error('Error removing signup:', err);
+    return false;
+  }
+}
 const PORT = process.env.PORT || 3000;
 
 app.use(session({
@@ -38,6 +97,9 @@ app.use(express.static('public'));
 const User = require('./models/user');
 // Adoption applications model (MongoDB)
 const AdoptionApplication = require('./models/adoptionApplication');
+// Slot signup models (MongoDB)
+const FeedingSignup = require('./models/feedingSignup');
+const NookSignup = require('./models/nookSignup');
 
 
 // --- LOGIN ROUTE FOR AJAX LOGIN ---
@@ -281,7 +343,8 @@ app.get('/myprofile', (req, res) => {
 });
 
 // Main page route
-app.get('/main', (req, res) => {
+app.get('/main', async (req, res) => {
+  try {
     const currentDate = moment();
     const weekDate = req.query.week ? moment(req.query.week) : currentDate;
     const weekDays = generateWeekData(weekDate);
@@ -293,17 +356,85 @@ app.get('/main', (req, res) => {
         '5 PM',
         '6 PM'
     ];
-     const user = req.session && req.session.user
+    const user = req.session && req.session.user
         ? req.session.user
         : { user_name: 'Guest' };
+
+    // Load current slot signups
+    const feedingSignups = await getSlotSignups('feeding');
+    const nookSignups = await getSlotSignups('nook');
+
+    // Handle slot reservation requests
+    if (req.query.action && user && user.id) {
+        const { action, type, day, date } = req.query;
+        
+        if (action === 'reserve' && type && day && date) {
+            const slotType = type === 'feeding' ? 'feeding' : 'nook';
+            const maxVolunteers = slotType === 'feeding' ? 5 : 3;
+            
+            // Check if already signed up
+            const existingSignup = (slotType === 'feeding' ? feedingSignups : nookSignups)
+                .find(signup => signup.volunteer_id === String(user.id) && signup.slot_date === date);
+            
+            if (existingSignup) {
+                return res.redirect(`/main?week=${weekDate.format('YYYY-MM-DD')}&error=already_signed`);
+            }
+            
+            // Check if slot is full
+            const daySignups = (slotType === 'feeding' ? feedingSignups : nookSignups)
+                .filter(signup => signup.slot_date === date);
+            
+            if (daySignups.length >= maxVolunteers) {
+                return res.redirect(`/main?week=${weekDate.format('YYYY-MM-DD')}&error=slot_full`);
+            }
+            
+            // Check if there's already a trainer for this slot
+            const hasTrainer = daySignups.some(signup => signup.is_trainer);
+            
+            // Add new signup - first person becomes trainer
+            const newSignup = {
+                slot_id: 1,
+                volunteer_id: String(user.id),
+                volunteer_name: user.name,
+                slot_date: date,
+                slot_day: day,
+                is_trainer: !hasTrainer // First person becomes trainer
+            };
+            
+            if (await addSlotSignup(slotType, newSignup)) {
+                const message = !hasTrainer ? 'reserved_as_trainer' : 'reserved';
+                return res.redirect(`/main?week=${weekDate.format('YYYY-MM-DD')}&success=${message}`);
+            } else {
+                return res.redirect(`/main?week=${weekDate.format('YYYY-MM-DD')}&error=server_error`);
+            }
+        }
+        
+        if (action === 'cancel' && type && day && date) {
+            const slotType = type === 'feeding' ? 'feeding' : 'nook';
+            
+            if (await removeSlotSignup(slotType, String(user.id), date)) {
+                return res.redirect(`/main?week=${weekDate.format('YYYY-MM-DD')}&success=cancelled`);
+            } else {
+                return res.redirect(`/main?week=${weekDate.format('YYYY-MM-DD')}&error=not_found`);
+            }
+        }
+    }
+
     res.render('index', {
         weekDays,
         currentMonth: monthName,
         timeSlots,
         events: events,
         currentWeek: weekDate.format('YYYY-MM-DD'),
-        user
+        user,
+        feedingSignups: JSON.stringify(feedingSignups),
+        nookSignups: JSON.stringify(nookSignups),
+        message: req.query.success || req.query.error
     });
+  } catch (err) {
+    console.error('Main route error:', err);
+    res.status(500).send('Server error');
+  }
 });
 
 app.get('/events', (req, res) => {
@@ -420,6 +551,7 @@ app.post('/adoption/applications', async (req, res) => {
     res.status(500).json({ message: 'Server error. Please try again.' });
   }
 });
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

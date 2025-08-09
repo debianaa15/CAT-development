@@ -126,10 +126,9 @@
                 Feeding
                 <span class="slot-card-time">4:00 - 6:00 PM</span>
               </div>
-              <div class="slot-card-body slot-card-body-row">
-                <span class="slot-card-status available" data-day="{{dayName}}"></span>
-                <span class="slot-card-full" data-day="{{dayName}}">Available</span>
-                <span class="slot-card-reserved" data-day="{{dayName}}">0/5 reserved</span>
+              <div class="slot-card-body slot-card-body-column">
+                <span class="slot-card-trainer" data-day="{{dayName}}">No trainer assigned</span>
+                <span class="slot-card-volunteer" data-day="{{dayName}}">0/5 reserved</span>
               </div>
               <div class="slot-card-flexfill"></div>
               <div class="slot-card-view">
@@ -177,7 +176,9 @@ document.addEventListener('DOMContentLoaded', function() {
     slotData[day] = {
       nook: {
         trainer: null,
-        status: 'waiting'
+        volunteers: [],
+        maxVolunteers: 3,
+        status: 'available'
       },
       feeding: {
         trainer: null,
@@ -187,6 +188,12 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     };
   });
+
+  // Load existing reservations from server data
+  loadServerData();
+  
+  // Show messages if any
+  showMessage();
 
   // Modal logic
   const modal = document.getElementById('slotModal');
@@ -227,15 +234,46 @@ document.addEventListener('DOMContentLoaded', function() {
 function showNookModal(day) {
   const modalBody = document.getElementById('modalBody');
   const nookData = slotData[day].nook;
+  const currentUser = '{{user.name}}';
+  const isUserReserved = nookData.volunteers.includes(currentUser);
+  const availableSpots = nookData.maxVolunteers - nookData.volunteers.length;
   
-  let trainerInfo = 'No trainer assigned';
-  let statusText = 'Waiting for trainer';
-  let statusColor = '#FF9800';
+  let trainerInfo = nookData.trainer || 'No trainer assigned';
+  let statusText = availableSpots > 0 ? 'Available' : 'Full';
+  let statusColor = availableSpots > 0 ? '#2dbe60' : '#F44336';
   
-  if (nookData.trainer) {
-    trainerInfo = nookData.trainer;
-    statusText = 'Trainer assigned';
-    statusColor = '#2dbe60';
+  // Generate volunteer list HTML
+  let volunteersHTML = '';
+  if (nookData.volunteers.length > 0) {
+    volunteersHTML = nookData.volunteers.map(volunteer => 
+      `<div class="modal-slot-vol">${volunteer}</div>`
+    ).join('');
+  } else {
+    volunteersHTML = '<div style="color: #6c7a89; font-style: italic;">No volunteers signed up yet</div>';
+  }
+  
+  // Generate button HTML
+  let buttonHTML = '';
+  const isUserTrainer = nookData.trainer === currentUser;
+  
+  if (isUserReserved) {
+    if (isUserTrainer) {
+      buttonHTML = `
+        <button class="modal-slot-reserved-btn" style="background: #FFD700;">You're the Trainer</button>
+        <button id="cancelNookBtn" class="modal-slot-cancel-btn" onclick="cancelNookReservation('${day}')">Cancel Trainer Slot</button>
+      `;
+    } else {
+      buttonHTML = `
+        <button class="modal-slot-reserved-btn">You're Registered</button>
+        <button id="cancelNookBtn" class="modal-slot-cancel-btn" onclick="cancelNookReservation('${day}')">Cancel Reservation</button>
+      `;
+    }
+  } else if (availableSpots > 0) {
+    const hasTrainer = nookData.trainer && nookData.trainer !== 'No trainer assigned';
+    const buttonText = hasTrainer ? 'Join as Volunteer' : 'Reserve as Trainer';
+    buttonHTML = `<button id="reserveNookBtn" class="modal-slot-reserve-btn" onclick="makeNookReservation('${day}')">${buttonText}</button>`;
+  } else {
+    buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #6c7a89;">Slot Full</button>`;
   }
   
   modalBody.innerHTML = `
@@ -254,16 +292,16 @@ function showNookModal(day) {
             <div class="modal-slot-status-text" style="color: ${statusColor};">${statusText}</div>
           </div>
         </div>
-        <div class="modal-slot-role">Trainer-only slot</div>
+        <div class="modal-slot-role">Open to volunteers</div>
         <div class="modal-slot-row modal-slot-row-volunteers">
-          <div class="modal-slot-vol-label">Volunteer Access:</div>
-          <div class="modal-slot-vol-count">Not available</div>
+          <div class="modal-slot-vol-label">Registered Volunteers:</div>
+          <div class="modal-slot-vol-count">${nookData.volunteers.length}/${nookData.maxVolunteers} reserved</div>
         </div>
         <div class="modal-slot-volunteers">
-          <div style="color: #6c7a89; font-style: italic;">This slot is reserved for trainers only.</div>
+          ${volunteersHTML}
         </div>
         <div id="modalButtons" class="modal-slot-buttons">
-          <button class="modal-slot-reserved-btn" style="background: #6c7a89;">Trainer Only</button>
+          ${buttonHTML}
         </div>
       </div>
     </div>
@@ -293,13 +331,24 @@ function showFeedingModal(day) {
   
   // Generate button HTML
   let buttonHTML = '';
+  const isUserTrainer = feedingData.trainer === currentUser;
+  
   if (isUserReserved) {
-    buttonHTML = `
-      <button class="modal-slot-reserved-btn">You're Registered</button>
-      <button id="cancelBtn" class="modal-slot-cancel-btn" onclick="cancelReservation('${day}')">Cancel Reservation</button>
-    `;
+    if (isUserTrainer) {
+      buttonHTML = `
+        <button class="modal-slot-reserved-btn" style="background: #FFD700;">You're the Trainer</button>
+        <button id="cancelBtn" class="modal-slot-cancel-btn" onclick="cancelReservation('${day}')">Cancel Trainer Slot</button>
+      `;
+    } else {
+      buttonHTML = `
+        <button class="modal-slot-reserved-btn">You're Registered</button>
+        <button id="cancelBtn" class="modal-slot-cancel-btn" onclick="cancelReservation('${day}')">Cancel Reservation</button>
+      `;
+    }
   } else if (availableSpots > 0) {
-    buttonHTML = `<button id="reserveBtn" class="modal-slot-reserve-btn" onclick="makeReservation('${day}')">Reserve Slot</button>`;
+    const hasTrainer = feedingData.trainer && feedingData.trainer !== 'No trainer assigned';
+    const buttonText = hasTrainer ? 'Join as Volunteer' : 'Reserve as Trainer';
+    buttonHTML = `<button id="reserveBtn" class="modal-slot-reserve-btn" onclick="makeReservation('${day}')">${buttonText}</button>`;
   } else {
     buttonHTML = `<button class="modal-slot-reserved-btn" style="background: #6c7a89;">Slot Full</button>`;
   }
@@ -339,29 +388,38 @@ function showFeedingModal(day) {
 function makeReservation(day) {
   const currentUser = '{{user.name}}';
   const feedingData = slotData[day].feeding;
+  const date = getDateForDay(day);
   
-  if (feedingData.volunteers.length < feedingData.maxVolunteers && !feedingData.volunteers.includes(currentUser)) {
-    feedingData.volunteers.push(currentUser);
-    updateSlotDisplay(day);
-    showFeedingModal(day); // Refresh modal
-    
-    // Show success message
-    alert('Slot reserved successfully!');
+  if (feedingData.volunteers.length >= feedingData.maxVolunteers) {
+    alert('This slot is already full.');
+    return;
+  }
+  
+  if (feedingData.volunteers.includes(currentUser)) {
+    alert('You are already signed up for this day.');
+    return;
+  }
+
+  if (confirm('Do you want to reserve this feeding slot?')) {
+    const currentWeek = getCurrentWeek();
+    window.location.href = `/main?week=${currentWeek}&action=reserve&type=feeding&day=${day}&date=${date}`;
   }
 }
 
 function cancelReservation(day) {
   const currentUser = '{{user.name}}';
   const feedingData = slotData[day].feeding;
+  const date = getDateForDay(day);
   
   const userIndex = feedingData.volunteers.indexOf(currentUser);
-  if (userIndex > -1) {
-    feedingData.volunteers.splice(userIndex, 1);
-    updateSlotDisplay(day);
-    showFeedingModal(day); // Refresh modal
-    
-    // Show cancellation message
-    alert('Reservation cancelled successfully!');
+  if (userIndex === -1) {
+    alert('No reservation found to cancel.');
+    return;
+  }
+
+  if (confirm('Do you want to cancel your feeding slot reservation?')) {
+    const currentWeek = getCurrentWeek();
+    window.location.href = `/main?week=${currentWeek}&action=cancel&type=feeding&day=${day}&date=${date}`;
   }
 }
 
@@ -372,21 +430,184 @@ function updateSlotDisplay(day) {
   // Update feeding card display
   const feedingCard = document.querySelector(`.feeding-card[data-day="${day}"]`);
   if (feedingCard) {
-    const statusDot = feedingCard.querySelector('.slot-card-status');
-    const statusText = feedingCard.querySelector('.slot-card-full');
-    const reservedText = feedingCard.querySelector('.slot-card-reserved');
+    const trainerSpan = feedingCard.querySelector('.slot-card-trainer');
+    const volunteerSpan = feedingCard.querySelector('.slot-card-volunteer');
     
-    if (availableSpots > 0) {
-      statusDot.className = 'slot-card-status available';
-      statusText.textContent = 'Available';
-      statusText.style.color = '#205C3B';
+    if (feedingData.trainer) {
+      trainerSpan.textContent = feedingData.trainer;
+      volunteerSpan.textContent = `${feedingData.volunteers.length}/${feedingData.maxVolunteers} volunteers`;
     } else {
-      statusDot.className = 'slot-card-status full';
-      statusText.textContent = 'Full';
-      statusText.style.color = '#F44336';
+      trainerSpan.textContent = 'No trainer assigned';
+      if (availableSpots > 0) {
+        volunteerSpan.textContent = `${feedingData.volunteers.length}/${feedingData.maxVolunteers} volunteers`;
+      } else {
+        volunteerSpan.textContent = 'Full';
+      }
+    }
+  }
+}
+
+// Helper function to get date for a day abbreviation
+function getDateForDay(day) {
+  const dayColumns = document.querySelectorAll('.day-column');
+  const dayHeaders = document.querySelectorAll('.day-header');
+  
+  for (let i = 0; i < dayHeaders.length; i++) {
+    const dayName = dayHeaders[i].querySelector('.day-name').textContent;
+    if (dayName === day) {
+      return dayColumns[i].getAttribute('data-date');
+    }
+  }
+  return null;
+}
+
+// Load existing reservations from server data
+function loadServerData() {
+  try {
+    // Parse server data passed from template
+    const feedingSignups = JSON.parse('{{{feedingSignups}}}' || '[]');
+    const nookSignups = JSON.parse('{{{nookSignups}}}' || '[]');
+    
+    console.log('Loading server data:', { feedingSignups, nookSignups });
+    
+    // Update feeding slots
+    feedingSignups.forEach(signup => {
+      const day = signup.slot_day;
+      if (slotData[day] && slotData[day].feeding) {
+        // Set trainer if this signup is marked as trainer
+        if (signup.is_trainer) {
+          slotData[day].feeding.trainer = signup.volunteer_name;
+          console.log(`Set feeding trainer for ${day}: ${signup.volunteer_name}`);
+        }
+        // Add to volunteers list if not already there
+        if (!slotData[day].feeding.volunteers.includes(signup.volunteer_name)) {
+          slotData[day].feeding.volunteers.push(signup.volunteer_name);
+        }
+      }
+    });
+    
+    // Update nook slots
+    nookSignups.forEach(signup => {
+      const day = signup.slot_day;
+      if (slotData[day] && slotData[day].nook) {
+        // Set trainer if this signup is marked as trainer
+        if (signup.is_trainer) {
+          slotData[day].nook.trainer = signup.volunteer_name;
+          console.log(`Set nook trainer for ${day}: ${signup.volunteer_name}`);
+        }
+        // Add to volunteers list if not already there
+        if (!slotData[day].nook.volunteers.includes(signup.volunteer_name)) {
+          slotData[day].nook.volunteers.push(signup.volunteer_name);
+        }
+      }
+    });
+    
+    console.log('Final slotData:', slotData);
+    
+    // Update displays
+    const weekDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    weekDays.forEach(day => {
+      updateSlotDisplay(day);
+      updateNookDisplay(day);
+    });
+  } catch (error) {
+    console.error('Error loading server data:', error);
+  }
+}
+
+// Nook reservation functions
+function makeNookReservation(day) {
+  const currentUser = '{{user.name}}';
+  const nookData = slotData[day].nook;
+  const date = getDateForDay(day);
+  
+  if (nookData.volunteers.length >= nookData.maxVolunteers) {
+    alert('This slot is already full.');
+    return;
+  }
+  
+  if (nookData.volunteers.includes(currentUser)) {
+    alert('You are already signed up for this day.');
+    return;
+  }
+
+  if (confirm('Do you want to reserve this nook slot?')) {
+    const currentWeek = getCurrentWeek();
+    window.location.href = `/main?week=${currentWeek}&action=reserve&type=nook&day=${day}&date=${date}`;
+  }
+}
+
+function cancelNookReservation(day) {
+  const currentUser = '{{user.name}}';
+  const nookData = slotData[day].nook;
+  const date = getDateForDay(day);
+  
+  const userIndex = nookData.volunteers.indexOf(currentUser);
+  if (userIndex === -1) {
+    alert('No reservation found to cancel.');
+    return;
+  }
+
+  if (confirm('Do you want to cancel your nook slot reservation?')) {
+    const currentWeek = getCurrentWeek();
+    window.location.href = `/main?week=${currentWeek}&action=cancel&type=nook&day=${day}&date=${date}`;
+  }
+}
+
+// Update nook display
+function updateNookDisplay(day) {
+  const nookData = slotData[day].nook;
+  const availableSpots = nookData.maxVolunteers - nookData.volunteers.length;
+  
+  // Update nook card display
+  const nookCard = document.querySelector(`.nook-card[data-day="${day}"]`);
+  if (nookCard) {
+    const trainerSpan = nookCard.querySelector('.slot-card-trainer');
+    const volunteerSpan = nookCard.querySelector('.slot-card-volunteer');
+    
+    if (nookData.trainer) {
+      trainerSpan.textContent = nookData.trainer;
+      volunteerSpan.textContent = `${nookData.volunteers.length}/${nookData.maxVolunteers} volunteers`;
+    } else {
+      trainerSpan.textContent = 'No trainer assigned';
+      if (availableSpots > 0) {
+        volunteerSpan.textContent = `${nookData.volunteers.length}/${nookData.maxVolunteers} volunteers`;
+      } else {
+        volunteerSpan.textContent = 'Full';
+      }
+    }
+  }
+}
+
+// Helper function to get current week
+function getCurrentWeek() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('week') || new Date().toISOString().slice(0, 10);
+}
+
+// Show success/error messages
+function showMessage() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const message = urlParams.get('success') || urlParams.get('error');
+  
+  if (message) {
+    let messageText = '';
+    switch(message) {
+      case 'reserved': messageText = 'Slot reserved successfully!'; break;
+      case 'reserved_as_trainer': messageText = 'Slot reserved successfully! You are now the trainer for this slot.'; break;
+      case 'cancelled': messageText = 'Reservation cancelled successfully!'; break;
+      case 'already_signed': messageText = 'You are already signed up for this day.'; break;
+      case 'slot_full': messageText = 'This slot is already full.'; break;
+      case 'not_found': messageText = 'No reservation found to cancel.'; break;
+      case 'server_error': messageText = 'Server error. Please try again.'; break;
+      default: messageText = message;
     }
     
-    reservedText.textContent = `${feedingData.volunteers.length}/${feedingData.maxVolunteers} reserved`;
+    alert(messageText);
+    
+    // Clean URL by removing message parameters
+    const cleanUrl = window.location.pathname + '?week=' + getCurrentWeek();
+    window.history.replaceState({}, '', cleanUrl);
   }
 }
 </script>
