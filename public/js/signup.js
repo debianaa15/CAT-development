@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (response.ok) {
                         alert('Signup successful!');
-                        window.location.href = '/signin';
+                        window.location.href = '/';
                     } else {
                         alert(result.message || 'Signup failed.');
                         button.disabled = false;
